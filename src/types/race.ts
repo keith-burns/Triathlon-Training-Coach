@@ -107,6 +107,21 @@ export interface WorkoutStep {
     cadence?: string; // e.g., "90 rpm"
 }
 
+// ============================================
+// Workout Completion Tracking
+// ============================================
+
+export type CompletionStatus = 'pending' | 'completed' | 'skipped' | 'partial';
+
+export interface WorkoutCompletion {
+    status: CompletionStatus;
+    completedAt?: string;
+    actualDuration?: number;
+    notes?: string;
+    perceivedEffort?: number; // 1-10 RPE scale
+    targetEffort?: number;    // Expected RPE from workout intensity
+}
+
 export interface Workout {
     id: string;
     discipline: Discipline;
@@ -115,6 +130,7 @@ export interface Workout {
     totalDuration: number; // minutes
     steps: WorkoutStep[];
     tips?: string[];
+    completion?: WorkoutCompletion;
 }
 
 export interface TrainingDay {

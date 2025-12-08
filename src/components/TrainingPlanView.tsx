@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import type { TrainingPlan, Workout, Discipline } from '../types/race';
+import type { TrainingPlan, Workout, Discipline, WorkoutCompletion } from '../types/race';
 import { WorkoutEditModal } from './WorkoutEditModal';
 import { WorkoutSwapModal } from './WorkoutSwapModal';
+import { WorkoutCompletionModal } from './WorkoutCompletionModal';
+import { getCompletionIcon, getCompletionColor } from '../utils/trainingAdvisor';
 import './TrainingPlanView.css';
 
 interface TrainingPlanViewProps {
@@ -43,6 +45,12 @@ export function TrainingPlanView({
     const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
     const [editingWorkout, setEditingWorkout] = useState<EditingWorkout | null>(null);
     const [swappingWorkout, setSwappingWorkout] = useState<SwappingWorkout | null>(null);
+    const [completingWorkout, setCompletingWorkout] = useState<{
+        workout: Workout;
+        weekIndex: number;
+        dayIndex: number;
+        workoutIndex: number;
+    } | null>(null);
 
     const currentWeek = plan.weeks[selectedWeek];
 
@@ -169,6 +177,30 @@ export function TrainingPlanView({
         setSwappingWorkout(null);
     };
 
+    const handleCompletionSave = (completion: WorkoutCompletion) => {
+        if (!completingWorkout || !onPlanUpdate) return;
+
+        const { weekIndex, dayIndex, workoutIndex } = completingWorkout;
+
+        const updatedPlan = { ...plan };
+        updatedPlan.weeks = [...plan.weeks];
+        updatedPlan.weeks[weekIndex] = { ...plan.weeks[weekIndex] };
+        updatedPlan.weeks[weekIndex].days = [...plan.weeks[weekIndex].days];
+        updatedPlan.weeks[weekIndex].days[dayIndex] = {
+            ...plan.weeks[weekIndex].days[dayIndex]
+        };
+        updatedPlan.weeks[weekIndex].days[dayIndex].workouts = [
+            ...plan.weeks[weekIndex].days[dayIndex].workouts
+        ];
+        updatedPlan.weeks[weekIndex].days[dayIndex].workouts[workoutIndex] = {
+            ...completingWorkout.workout,
+            completion
+        };
+
+        onPlanUpdate(updatedPlan);
+        setCompletingWorkout(null);
+    };
+
     return (
         <div className="plan-view">
             {/* Header */}
@@ -288,6 +320,14 @@ export function TrainingPlanView({
                                         aria-expanded={expandedWorkout === workout.id}
                                     >
                                         <span className="workout-icon">{getDisciplineIcon(workout.discipline)}</span>
+                                        {workout.completion && (
+                                            <span
+                                                className="completion-indicator"
+                                                style={{ backgroundColor: getCompletionColor(workout) }}
+                                            >
+                                                {getCompletionIcon(workout)}
+                                            </span>
+                                        )}
                                         <div className="workout-info">
                                             <span className="workout-title">{workout.title}</span>
                                             {workout.totalDuration > 0 && (
@@ -328,6 +368,19 @@ export function TrainingPlanView({
                                                             )}
                                                         >
                                                             🔄 Swap
+                                                        </button>
+                                                    )}
+                                                    {workout.discipline !== 'rest' && (
+                                                        <button
+                                                            className={`action-btn log-btn ${workout.completion?.status === 'completed' ? 'completed' : ''}`}
+                                                            onClick={() => setCompletingWorkout({
+                                                                workout,
+                                                                weekIndex: selectedWeek,
+                                                                dayIndex,
+                                                                workoutIndex
+                                                            })}
+                                                        >
+                                                            {workout.completion ? '📝 Update Log' : '✓ Log Workout'}
                                                         </button>
                                                     )}
                                                 </div>
@@ -402,6 +455,15 @@ export function TrainingPlanView({
                     discipline={swappingWorkout.discipline}
                     onSwap={handleSwapConfirm}
                     onClose={() => setSwappingWorkout(null)}
+                />
+            )}
+
+            {/* Completion Modal */}
+            {completingWorkout && (
+                <WorkoutCompletionModal
+                    workout={completingWorkout.workout}
+                    onSave={handleCompletionSave}
+                    onClose={() => setCompletingWorkout(null)}
                 />
             )}
         </div>

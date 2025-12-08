@@ -1,0 +1,186 @@
+/**
+ * Workout Completion Modal Styles
+ */
+
+.completion-modal {
+    max-width: 500px;
+}
+
+.workout-info-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--neutral-100);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-4);
+}
+
+.workout-info-banner strong {
+    color: var(--neutral-800);
+}
+
+.workout-info-banner span {
+    color: var(--neutral-500);
+    font-size: 0.9rem;
+}
+
+/* Status Selector */
+.status-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.status-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.status-btn:hover {
+    background: var(--neutral-50);
+}
+
+.status-btn .status-icon {
+    font-size: 1.5rem;
+}
+
+.status-btn span:last-child {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--neutral-600);
+}
+
+.status-btn.completed.active {
+    border-color: var(--success);
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.status-btn.completed.active .status-icon {
+    color: var(--success);
+}
+
+.status-btn.partial.active {
+    border-color: var(--warning);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.status-btn.partial.active .status-icon {
+    color: var(--warning);
+}
+
+.status-btn.skipped.active {
+    border-color: var(--neutral-400);
+    background: var(--neutral-100);
+}
+
+/* RPE Slider */
+.rpe-group label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.target-rpe {
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--neutral-500);
+}
+
+.rpe-slider-container {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-2);
+}
+
+.rpe-slider {
+    flex: 1;
+    height: 10px;
+    border-radius: 5px;
+    appearance: none;
+    cursor: pointer;
+}
+
+.rpe-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid currentColor;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+}
+
+.rpe-value {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+}
+
+.rpe-number {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.rpe-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Effort Feedback */
+.effort-feedback {
+    margin-top: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+}
+
+.effort-feedback.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+    border: 1px solid var(--warning);
+}
+
+.effort-feedback.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+/* Form overrides */
+.completion-modal .form-group {
+    margin-bottom: var(--space-4);
+}
+
+.completion-modal .form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: var(--space-2);
+    color: var(--neutral-700);
+}
+
+.completion-modal .form-input {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--neutral-300);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+}
+
+.completion-modal .form-input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+}

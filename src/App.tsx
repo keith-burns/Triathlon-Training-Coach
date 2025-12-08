@@ -12,6 +12,7 @@ import { ProfilePage } from './components/ProfilePage';
 import { AppLayout } from './components/AppLayout';
 import { WorkoutLibrary } from './components/WorkoutLibrary';
 import { GoalsPage } from './components/GoalsPage';
+import { AnalyticsPage } from './components/AnalyticsPage';
 import type { AppView } from './components/AppHeader';
 import { useAuth } from './contexts/AuthContext';
 import { useTrainingPlans } from './hooks/useTrainingPlans';
@@ -254,6 +255,9 @@ function App() {
           )}
           {currentView === 'library' && (
             <WorkoutLibrary />
+          )}
+          {currentView === 'analytics' && (
+            <AnalyticsPage plan={trainingPlan} />
           )}
           {currentView === 'profile' && (
             <ProfilePage

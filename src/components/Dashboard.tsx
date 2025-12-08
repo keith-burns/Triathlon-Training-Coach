@@ -20,8 +20,11 @@ export function Dashboard({ plan, userName }: DashboardProps) {
     }, []);
 
     const { todayWorkouts, currentWeek, daysUntilRace, completedWeeks, totalWeeks, weekProgress } = useMemo(() => {
-        const raceDate = new Date(plan.raceConfig.raceDate);
+        // Parse date string as local date to avoid timezone issues
+        const [year, month, day] = plan.raceConfig.raceDate.split('-').map(Number);
+        const raceDate = new Date(year, month - 1, day);
         const now = new Date();
+        now.setHours(0, 0, 0, 0); // Normalize to start of day
         const daysUntil = Math.ceil((raceDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
         // Find current week and today's workouts
@@ -185,7 +188,12 @@ export function Dashboard({ plan, userName }: DashboardProps) {
                         <span className="stat-icon">📅</span>
                         <div>
                             <div className="stat-value">
-                                {new Date(plan.raceConfig.raceDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                {(() => {
+                                    // Parse date string as local date to avoid timezone issues
+                                    const [year, month, day] = plan.raceConfig.raceDate.split('-').map(Number);
+                                    const date = new Date(year, month - 1, day);
+                                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                })()}
                             </div>
                             <div className="stat-label">Race Day</div>
                         </div>

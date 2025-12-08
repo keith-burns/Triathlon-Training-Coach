@@ -477,3 +477,35 @@
 .save-btn {
     margin-top: var(--space-3);
 }
+
+/* Completion Indicator */
+.completion-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    color: white;
+    font-weight: bold;
+    margin-left: calc(-1 * var(--space-2));
+    margin-right: var(--space-1);
+}
+
+/* Log Button */
+.log-btn {
+    background: var(--success);
+    color: white;
+    border: none;
+}
+
+.log-btn:hover {
+    background: #059669;
+}
+
+.log-btn.completed {
+    background: var(--primary-100);
+    color: var(--primary-700);
+    border: 1px solid var(--primary-300);
+}

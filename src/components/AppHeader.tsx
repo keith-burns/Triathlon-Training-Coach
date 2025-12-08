@@ -5,7 +5,7 @@
 
 import './AppHeader.css';
 
-export type AppView = 'dashboard' | 'goals' | 'plan' | 'profile' | 'library';
+export type AppView = 'dashboard' | 'goals' | 'plan' | 'analytics' | 'profile' | 'library';
 
 interface AppHeaderProps {
     currentView: AppView;
@@ -58,7 +58,15 @@ export function AppHeader({
                         disabled={!hasPlan}
                     >
                         <span className="tab-icon">📋</span>
-                        <span className="tab-label">Training Plan</span>
+                        <span className="tab-label">Plan</span>
+                    </button>
+                    <button
+                        className={`nav-tab ${currentView === 'analytics' ? 'active' : ''}`}
+                        onClick={() => onNavigate('analytics')}
+                        disabled={!hasPlan}
+                    >
+                        <span className="tab-icon">📊</span>
+                        <span className="tab-label">Analytics</span>
                     </button>
                     <button
                         className={`nav-tab ${currentView === 'library' ? 'active' : ''}`}
