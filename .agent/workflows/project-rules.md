@@ -52,7 +52,7 @@ Execute all work as an expert solution architect, full-stack developer, QA engin
 
 ## 10. Performance
 - Avoid unnecessary re-renders
-- Memoize expensive computations
+- Memorize expensive computations
 - Lazy-load routes and components
 - Optimize bundle size
 
@@ -73,3 +73,6 @@ Execute all work as an expert solution architect, full-stack developer, QA engin
 ## 14. Git Hygiene
 - Use meaningful, atomic commits
 - Keep main branch deployable at all times
+
+## 15. Local Changes Only
+- Do not make any changes outside of the Triathlon Training Coach project's folder

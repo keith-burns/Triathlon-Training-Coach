@@ -1,0 +1,215 @@
+/**
+ * Workout Edit Modal Styles
+ */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--space-4);
+}
+
+.modal-content {
+    background: white;
+    border-radius: var(--radius-xl);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-xl);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--neutral-800);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--neutral-400);
+    cursor: pointer;
+    padding: var(--space-1);
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: var(--neutral-600);
+}
+
+.modal-body {
+    padding: var(--space-5);
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--neutral-200);
+    background: var(--neutral-50);
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: var(--space-4);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-1);
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--neutral-700);
+}
+
+.form-input {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--neutral-300);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+}
+
+.form-row {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Steps Editor */
+.steps-editor {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--neutral-200);
+}
+
+.steps-editor h3 {
+    font-size: 1rem;
+    color: var(--neutral-700);
+    margin-bottom: var(--space-3);
+}
+
+.step-edit-card {
+    background: var(--neutral-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.step-edit-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+}
+
+.step-number {
+    width: 24px;
+    height: 24px;
+    background: var(--primary-500);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.step-name-input {
+    flex: 1;
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--neutral-300);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+}
+
+.step-duration-input {
+    width: 100px;
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--neutral-300);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.step-instructions-input {
+    width: 100%;
+    padding: var(--space-2);
+    border: 1px solid var(--neutral-300);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    resize: vertical;
+}
+
+/* Buttons */
+.btn {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-lg);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--primary-500);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: var(--primary-600);
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--neutral-700);
+    border: 1px solid var(--neutral-300);
+}
+
+.btn-secondary:hover {
+    background: var(--neutral-100);
+}
+
+@media (max-width: 600px) {
+    .modal-content {
+        max-height: 95vh;
+        margin: var(--space-2);
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}

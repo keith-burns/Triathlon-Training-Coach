@@ -10,6 +10,8 @@ import { AthleteProfileWizard } from './components/AthleteProfileWizard';
 import { Dashboard } from './components/Dashboard';
 import { ProfilePage } from './components/ProfilePage';
 import { AppLayout } from './components/AppLayout';
+import { WorkoutLibrary } from './components/WorkoutLibrary';
+import { GoalsPage } from './components/GoalsPage';
 import type { AppView } from './components/AppHeader';
 import { useAuth } from './contexts/AuthContext';
 import { useTrainingPlans } from './hooks/useTrainingPlans';
@@ -175,6 +177,24 @@ function App() {
     setShowProfileWizard(false);
   };
 
+  const handlePlanUpdate = (updatedPlan: TrainingPlan) => {
+    setTrainingPlan(updatedPlan);
+    setSaveStatus('idle'); // Mark as needing save
+
+    // Auto-save for logged-in users
+    if (user) {
+      savePlan(updatedPlan).then(({ id, error }) => {
+        if (!error && id) {
+          setSavedPlanId(id);
+          setSaveStatus('saved');
+        }
+      });
+    } else {
+      // Save to localStorage for anonymous users
+      localStorage.setItem('pendingPlan', JSON.stringify(updatedPlan));
+    }
+  };
+
   // Show profile wizard
   if (showProfileWizard) {
     return (
@@ -212,7 +232,28 @@ function App() {
               saveStatus={saveStatus}
               isLoggedIn={true}
               onLoginClick={() => { }}
+              onPlanUpdate={handlePlanUpdate}
             />
+          )}
+          {currentView === 'goals' && (
+            <GoalsPage
+              currentConfig={trainingPlan.raceConfig}
+              onSave={(newConfig) => {
+                const newPlan = generateTrainingPlan(newConfig);
+                setTrainingPlan(newPlan);
+                setSaveStatus('idle');
+                // Auto-save for logged-in users
+                savePlan(newPlan).then(({ id, error }) => {
+                  if (!error && id) {
+                    setSavedPlanId(id);
+                    setSaveStatus('saved');
+                  }
+                });
+              }}
+            />
+          )}
+          {currentView === 'library' && (
+            <WorkoutLibrary />
           )}
           {currentView === 'profile' && (
             <ProfilePage
@@ -250,6 +291,7 @@ function App() {
           saveStatus={saveStatus}
           isLoggedIn={false}
           onLoginClick={() => setIsAuthModalOpen(true)}
+          onPlanUpdate={handlePlanUpdate}
         />
         <AuthModal
           isOpen={isAuthModalOpen}
