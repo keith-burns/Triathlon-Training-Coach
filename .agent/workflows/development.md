@@ -18,13 +18,16 @@ supabase functions new oauth-callback
 supabase functions new webhook-handler
 ```
 
-1. Create Supabase Edge Functions project structure
-2. Set up secure environment variables
-3. Create OAuth token storage table (encrypted)
-4. Test CORS configuration
-5. Deploy and verify endpoints
+1. **Move Supabase credentials to `.env` file** (security fix)
+2. **Use `import.meta.env` for all environment variables**
+3. **Install and configure `react-router-dom`** for proper navigation
+4. Create Supabase Edge Functions project structure
+5. Set up secure environment variables
+6. Create OAuth token storage table (encrypted)
+7. Test CORS configuration
+8. Deploy and verify endpoints
 
-**Estimated: 8-12 hours**
+**Estimated: 10-14 hours** (adjusted for security/routing work)
 
 ---
 

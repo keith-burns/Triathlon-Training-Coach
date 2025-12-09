@@ -47,17 +47,27 @@ Set up backend infrastructure required for OAuth integrations, secure API key st
 - Foundation for real-time activity sync
 
 ### Acceptance Criteria
+
+**Security & Auth:**
+- [ ] Move Supabase credentials to `.env` file (security fix)
+- [ ] Use `import.meta.env` for all environment variables
+- [ ] Secure token handling for OAuth (encrypted storage, auto-refresh)
+- [ ] Add "Forgot Password" UI flow (Supabase built-in)
+
+**Infrastructure:**
+- [ ] Install and configure `react-router-dom` for proper navigation
 - [ ] Supabase Edge Functions or Express API setup
-- [ ] Secure environment variable management
 - [ ] OAuth token storage (encrypted)
 - [ ] Webhook endpoints for activity notifications
 - [ ] CORS configuration for frontend
 - [ ] Basic error logging
 
 ### Technical Notes
+- Supabase Auth handles password hashing (bcrypt) and session management
 - Can use Supabase Edge Functions (Deno) to stay in ecosystem
 - Alternative: Vercel/Netlify serverless functions
 - Must handle token refresh for OAuth providers
+- React Router needed for bookmarkable URLs, back button, and PWA experience
 
 ### Dependencies
 - None (this is the foundation)
@@ -245,6 +255,7 @@ Send planned workouts to Garmin Connect so athletes can follow structured traini
 - Works across swim/bike/run with sport-specific features
 
 ### Acceptance Criteria
+- [ ] **Refactor `WorkoutStep` type to use structured data** (required for API)
 - [ ] Map app workout format to Garmin Training API JSON schema
 - [ ] Support all step types: warmup, interval, recovery, rest, cooldown
 - [ ] Support targets: HR zone, power zone, pace range, open
@@ -259,6 +270,7 @@ Send planned workouts to Garmin Connect so athletes can follow structured traini
 - Garmin Training API access (part of Connect Developer Program)
 
 ### Technical Notes
+- Current `WorkoutStep.duration` uses free-text strings - must convert to structured format
 - API accepts JSON, Garmin handles FIT file generation internally
 - Different Garmin models support different workout features
 - Swim workouts require sport-specific step structure
@@ -954,6 +966,35 @@ Add automated test coverage for critical paths to catch regressions as features 
 
 ### Dependencies
 - None (can start anytime)
+
+---
+
+## 🗑️ B-030: Account Deletion
+
+| Field | Value |
+|-------|-------|
+| **Priority** | P5 - Future |
+| **Value** | ⭐⭐ Low |
+| **Effort** | **2-3 hours** |
+| **Status** | Not Started |
+
+### Description
+Allow users to delete their account and all associated data (GDPR-like compliance).
+
+### User Value
+- Control over personal data
+- Privacy assurance
+- Right to be forgotten
+
+### Acceptance Criteria
+- [ ] "Delete Account" option in settings
+- [ ] Confirmation dialog with clear warning
+- [ ] Delete all user data (profile, plans, completions)
+- [ ] Revoke OAuth tokens for connected services
+- [ ] Send confirmation email after deletion
+
+### Dependencies
+- None (Supabase handles cascade delete with proper RLS)
 
 ---
 
