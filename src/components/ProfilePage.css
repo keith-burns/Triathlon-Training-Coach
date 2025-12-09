@@ -342,6 +342,185 @@
     color: #dc2626;
 }
 
+/* Equipment Grid (Edit) */
+.equipment-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.equipment-btn {
+    padding: var(--space-2) var(--space-4);
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    background: white;
+    font-size: 0.9rem;
+    transition: all var(--transition-fast);
+}
+
+.equipment-btn:hover {
+    border-color: var(--primary-300);
+}
+
+.equipment-btn.active {
+    border-color: var(--primary-500);
+    background: var(--primary-100);
+    color: var(--primary-700);
+}
+
+/* Equipment Display (View) */
+.equipment-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.equipment-tag {
+    padding: var(--space-1) var(--space-3);
+    background: var(--primary-100);
+    color: var(--primary-700);
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+}
+
+/* Strength/Weakness */
+.strength-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+}
+
+.strength-select {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.strength-label {
+    font-size: 0.85rem;
+    color: var(--neutral-600);
+}
+
+.discipline-options {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.discipline-btn {
+    flex: 1;
+    padding: var(--space-2) var(--space-3);
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    background: white;
+    font-size: 0.85rem;
+    text-transform: capitalize;
+    transition: all var(--transition-fast);
+}
+
+.discipline-btn:hover {
+    border-color: var(--neutral-300);
+}
+
+.discipline-btn.active.strongest {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: var(--success);
+    color: #15803d;
+}
+
+.discipline-btn.active.weakest {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: var(--warning);
+    color: #b45309;
+}
+
+/* Assessment Display (View) */
+.assessment-display {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.assessment-item {
+    flex: 1;
+    padding: var(--space-3);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.assessment-item.strongest {
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.assessment-item.weakest {
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.assessment-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--neutral-500);
+    text-transform: uppercase;
+    margin-bottom: var(--space-1);
+}
+
+.assessment-value {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+/* Goal Options (Edit) */
+.goal-options {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.goal-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    background: white;
+    transition: all var(--transition-fast);
+}
+
+.goal-btn:hover {
+    border-color: var(--primary-300);
+}
+
+.goal-btn.active {
+    border-color: var(--primary-500);
+    background: var(--primary-50);
+}
+
+.goal-btn .goal-icon {
+    font-size: 1.5rem;
+}
+
+.goal-btn .goal-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Goal Display (View) */
+.goal-display {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.goal-icon-large {
+    font-size: 2rem;
+}
+
+.goal-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .profile-cards {
@@ -358,5 +537,13 @@
 
     .rest-days-grid {
         flex-wrap: wrap;
+    }
+
+    .strength-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .goal-options {
+        flex-direction: column;
     }
 }

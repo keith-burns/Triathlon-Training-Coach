@@ -108,7 +108,7 @@ function App() {
   };
 
   const handleSubmitConfig = (config: RaceConfig) => {
-    const plan = generateTrainingPlan(config);
+    const plan = generateTrainingPlan(config, profile || undefined);
     setTrainingPlan(plan);
     setSavedPlanId(null);
     setSaveStatus('idle');
@@ -168,7 +168,7 @@ function App() {
 
     // If user has a current plan, regenerate it with new profile data
     if (trainingPlan) {
-      const updatedPlan = generateTrainingPlan(trainingPlan.raceConfig);
+      const updatedPlan = generateTrainingPlan(trainingPlan.raceConfig, profile || undefined);
       setTrainingPlan(updatedPlan);
       setSaveStatus('idle'); // Mark as needing save
     }
@@ -240,7 +240,7 @@ function App() {
             <GoalsPage
               currentConfig={trainingPlan.raceConfig}
               onSave={(newConfig) => {
-                const newPlan = generateTrainingPlan(newConfig);
+                const newPlan = generateTrainingPlan(newConfig, profile || undefined);
                 setTrainingPlan(newPlan);
                 setSaveStatus('idle');
                 // Auto-save for logged-in users
@@ -267,7 +267,7 @@ function App() {
               }}
               onPlanRegenerate={() => {
                 if (trainingPlan) {
-                  const updatedPlan = generateTrainingPlan(trainingPlan.raceConfig);
+                  const updatedPlan = generateTrainingPlan(trainingPlan.raceConfig, profile || undefined);
                   setTrainingPlan(updatedPlan);
                   setSaveStatus('idle');
                 }

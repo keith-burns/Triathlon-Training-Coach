@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
-import type { AthleteProfile, DisciplineSplit, DayOfWeek, Injury, HeartRateZones, RaceTimeBreakdown } from '../types/athlete';
+import type { AthleteProfile, DisciplineSplit, DayOfWeek, Injury, HeartRateZones, RaceTimeBreakdown, Equipment, StrengthWeakness } from '../types/athlete';
 import { useAuth } from '../contexts/AuthContext';
 
 interface UseAthleteProfileReturn {
@@ -48,15 +48,19 @@ export function useAthleteProfile(): UseAthleteProfileReturn {
                     setError(fetchError.message);
                 }
             } else if (data) {
-                // Map database fields to camelCase
                 setProfile({
                     id: data.id,
                     userId: data.user_id,
+                    age: data.age,
+                    trainingYearsExperience: data.training_years_experience,
                     experienceLevel: data.experience_level || 'beginner',
                     swimCSS: data.swim_css,
                     bikeFTP: data.bike_ftp,
                     runThresholdPace: data.run_threshold_pace,
+                    lactateThresholdHR: data.lactate_threshold_hr,
                     injuries: (data.injuries as Injury[]) || [],
+                    equipment: (data.equipment as Equipment) || undefined,
+                    strengthWeakness: (data.strength_weakness as StrengthWeakness) || undefined,
                     raceTimeBreakdown: data.race_time_breakdown as RaceTimeBreakdown | undefined,
                     restDayPreferences: (data.rest_day_preferences as DayOfWeek[]) || [],
                     disciplineSplit: (data.discipline_split as DisciplineSplit) || { swim: 20, bike: 45, run: 35 },
@@ -88,11 +92,16 @@ export function useAthleteProfile(): UseAthleteProfileReturn {
             // Map camelCase to snake_case for database
             const dbData = {
                 user_id: user.id,
+                age: profileData.age,
+                training_years_experience: profileData.trainingYearsExperience,
                 experience_level: profileData.experienceLevel,
                 swim_css: profileData.swimCSS,
                 bike_ftp: profileData.bikeFTP,
                 run_threshold_pace: profileData.runThresholdPace,
+                lactate_threshold_hr: profileData.lactateThresholdHR,
                 injuries: profileData.injuries,
+                equipment: profileData.equipment,
+                strength_weakness: profileData.strengthWeakness,
                 race_time_breakdown: profileData.raceTimeBreakdown,
                 rest_day_preferences: profileData.restDayPreferences,
                 discipline_split: profileData.disciplineSplit,

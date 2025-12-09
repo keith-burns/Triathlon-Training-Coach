@@ -11,13 +11,17 @@ import type {
     Injury,
     DisciplineSplit,
     RaceTimeBreakdown,
-    HeartRateZones
+    HeartRateZones,
+    Equipment,
+    StrengthWeakness,
+    Discipline
 } from '../types/athlete';
 import {
     DEFAULT_DISCIPLINE_SPLIT,
     DEFAULT_REST_DAYS,
-    calculateHeartRateZones,
-    estimateMaxHR
+    DEFAULT_EQUIPMENT,
+    calculateZonesFromLTHR,
+    calculateZonesFromAge
 } from '../types/athlete';
 import './AthleteProfileWizard.css';
 
@@ -27,10 +31,11 @@ interface AthleteProfileWizardProps {
     initialProfile?: Partial<AthleteProfile>;
 }
 
-type WizardStep = 'fitness' | 'injuries' | 'race-times' | 'preferences';
+type WizardStep = 'about-you' | 'fitness' | 'injuries' | 'race-times' | 'preferences';
 
-const STEPS: WizardStep[] = ['fitness', 'injuries', 'race-times', 'preferences'];
+const STEPS: WizardStep[] = ['about-you', 'fitness', 'injuries', 'race-times', 'preferences'];
 const STEP_TITLES: Record<WizardStep, string> = {
+    'about-you': 'About You',
     'fitness': 'Fitness Level',
     'injuries': 'Injury History',
     'race-times': 'Race Time Goals',
@@ -40,7 +45,15 @@ const STEP_TITLES: Record<WizardStep, string> = {
 const DAYS: DayOfWeek[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 export function AthleteProfileWizard({ onComplete, onSkip, initialProfile }: AthleteProfileWizardProps) {
-    const [currentStep, setCurrentStep] = useState<WizardStep>('fitness');
+    const [currentStep, setCurrentStep] = useState<WizardStep>('about-you');
+
+    // Step 0: About You (Demographics, Equipment)
+    const [age, setAge] = useState<number | ''>(initialProfile?.age || 35);
+    const [trainingYears, setTrainingYears] = useState<number | ''>(initialProfile?.trainingYearsExperience || 1);
+    const [equipment, setEquipment] = useState<Equipment>(initialProfile?.equipment || { ...DEFAULT_EQUIPMENT });
+    const [strengthWeakness, setStrengthWeakness] = useState<StrengthWeakness>(
+        initialProfile?.strengthWeakness || { strongest: 'bike', weakest: 'swim' }
+    );
 
     // Step 1: Fitness Level
     const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel>(
@@ -72,8 +85,8 @@ export function AthleteProfileWizard({ onComplete, onSkip, initialProfile }: Ath
     const [disciplineSplit, setDisciplineSplit] = useState<DisciplineSplit>(
         initialProfile?.disciplineSplit || { ...DEFAULT_DISCIPLINE_SPLIT }
     );
-    const [age, setAge] = useState<number | ''>(35);
     const [restingHR, setRestingHR] = useState<number | ''>(60);
+    const [lthr, setLthr] = useState<number | ''>(initialProfile?.lactateThresholdHR || '');
     const [hrZones, setHrZones] = useState<HeartRateZones | null>(null);
 
     const currentStepIndex = STEPS.indexOf(currentStep);
@@ -93,9 +106,13 @@ export function AthleteProfileWizard({ onComplete, onSkip, initialProfile }: Ath
     };
 
     const calculateZones = () => {
-        if (typeof age === 'number' && typeof restingHR === 'number') {
-            const maxHR = estimateMaxHR(age);
-            const zones = calculateHeartRateZones(maxHR, restingHR);
+        if (typeof lthr === 'number' && lthr > 0) {
+            // Preferred: Use LTHR if provided
+            const zones = calculateZonesFromLTHR(lthr);
+            setHrZones(zones);
+        } else if (typeof age === 'number' && typeof restingHR === 'number') {
+            // Fallback: Estimate from age using Tanaka formula
+            const zones = calculateZonesFromAge(age, restingHR);
             setHrZones(zones);
         }
     };
@@ -147,6 +164,10 @@ export function AthleteProfileWizard({ onComplete, onSkip, initialProfile }: Ath
 
     const handleComplete = () => {
         const profile: Partial<AthleteProfile> = {
+            age: typeof age === 'number' ? age : undefined,
+            trainingYearsExperience: typeof trainingYears === 'number' ? trainingYears : undefined,
+            equipment,
+            strengthWeakness,
             experienceLevel,
             swimCSS: swimCSS || undefined,
             bikeFTP: typeof bikeFTP === 'number' ? bikeFTP : undefined,
@@ -204,6 +225,98 @@ export function AthleteProfileWizard({ onComplete, onSkip, initialProfile }: Ath
 
                 {/* Step Content */}
                 <div className="wizard-content">
+                    {/* Step 0: About You */}
+                    {currentStep === 'about-you' && (
+                        <div className="wizard-step">
+                            <h3>Tell us about yourself</h3>
+
+                            {/* Demographics */}
+                            <div className="about-section">
+                                <div className="demographics-grid">
+                                    <div className="metric-input">
+                                        <label>Age</label>
+                                        <input
+                                            type="number"
+                                            placeholder="35"
+                                            value={age}
+                                            onChange={(e) => setAge(e.target.value ? parseInt(e.target.value) : '')}
+                                            min={18}
+                                            max={99}
+                                        />
+                                    </div>
+                                    <div className="metric-input">
+                                        <label>Years of Training</label>
+                                        <input
+                                            type="number"
+                                            placeholder="1"
+                                            value={trainingYears}
+                                            onChange={(e) => setTrainingYears(e.target.value ? parseInt(e.target.value) : '')}
+                                            min={0}
+                                            max={50}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Equipment */}
+                            <h4>Equipment Access</h4>
+                            <p className="hint">What training equipment do you have?</p>
+                            <div className="equipment-grid">
+                                {[
+                                    { key: 'hasPoolAccess', label: '🏊 Pool Access', icon: '🏊' },
+                                    { key: 'hasBikeTrainer', label: '🚴 Indoor Trainer', icon: '🎡' },
+                                    { key: 'hasGymAccess', label: '🏋️ Gym Access', icon: '🏋️' },
+                                    { key: 'hasPowerMeter', label: '⚡ Power Meter', icon: '⚡' },
+                                    { key: 'hasHeartRateMonitor', label: '❤️ HR Monitor', icon: '❤️' },
+                                ].map(({ key, label }) => (
+                                    <button
+                                        key={key}
+                                        type="button"
+                                        className={`equipment-btn ${equipment[key as keyof Equipment] ? 'selected' : ''}`}
+                                        onClick={() => setEquipment({ ...equipment, [key]: !equipment[key as keyof Equipment] })}
+                                    >
+                                        {label}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Strength/Weakness */}
+                            <h4>Self Assessment</h4>
+                            <div className="strength-grid">
+                                <div className="strength-select">
+                                    <label>Your Strongest Discipline</label>
+                                    <div className="discipline-options">
+                                        {(['swim', 'bike', 'run'] as Discipline[]).map(d => (
+                                            <button
+                                                key={d}
+                                                type="button"
+                                                className={`discipline-btn ${strengthWeakness.strongest === d ? 'selected strongest' : ''}`}
+                                                onClick={() => setStrengthWeakness({ ...strengthWeakness, strongest: d })}
+                                            >
+                                                {d === 'swim' ? '🏊' : d === 'bike' ? '🚴' : '🏃'} {d}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="strength-select">
+                                    <label>Your Weakest Discipline</label>
+                                    <div className="discipline-options">
+                                        {(['swim', 'bike', 'run'] as Discipline[]).map(d => (
+                                            <button
+                                                key={d}
+                                                type="button"
+                                                className={`discipline-btn ${strengthWeakness.weakest === d ? 'selected weakest' : ''}`}
+                                                onClick={() => setStrengthWeakness({ ...strengthWeakness, weakest: d })}
+                                            >
+                                                {d === 'swim' ? '🏊' : d === 'bike' ? '🚴' : '🏃'} {d}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Step 1: Fitness Level */}
                     {currentStep === 'fitness' && (
                         <div className="wizard-step">
@@ -460,7 +573,17 @@ export function AthleteProfileWizard({ onComplete, onSkip, initialProfile }: Ath
                                             onChange={(e) => setRestingHR(e.target.value ? parseInt(e.target.value) : '')}
                                         />
                                     </div>
-                                    <button className="btn btn-outline" onClick={calculateZones}>
+                                    <div className="hr-input lthr-input">
+                                        <label>LTHR (optional, preferred)</label>
+                                        <input
+                                            type="number"
+                                            placeholder="From 30-min test"
+                                            value={lthr}
+                                            onChange={(e) => setLthr(e.target.value ? parseInt(e.target.value) : '')}
+                                        />
+                                        <span className="hint">Most accurate if known</span>
+                                    </div>
+                                    <button type="button" className="btn btn-outline" onClick={calculateZones}>
                                         Calculate Zones
                                     </button>
                                 </div>

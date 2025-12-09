@@ -14,6 +14,8 @@ import type {
     RaceDistanceId,
 } from '../types/race';
 
+import type { AthleteProfile, DisciplineSplit, StrengthWeakness } from '../types/athlete';
+
 // ============================================
 // Helper Functions
 // ============================================
@@ -691,16 +693,43 @@ function generateWeekWorkouts(
     weeklyHours: number,
     raceDistance: RaceDistanceId,
     weekNumber: number,
-    startDate: Date
+    startDate: Date,
+    disciplineSplit?: DisciplineSplit,
+    strengthWeakness?: StrengthWeakness
 ): TrainingDay[] {
     const days: TrainingDay[] = [];
     const minutesAvailable = weeklyHours * 60;
 
-    // Distribute time across disciplines (approximate for triathlon)
-    const swimPercent = 0.20;
-    const bikePercent = 0.45;
-    const runPercent = 0.30;
+    // Use profile discipline split if available, otherwise defaults
+    const baseSplit = disciplineSplit || { swim: 20, bike: 45, run: 35 };
+
+    // Adjust split based on strength/weakness: give 5% extra to weakest discipline
+    let swimPercent = baseSplit.swim / 100;
+    let bikePercent = baseSplit.bike / 100;
+    let runPercent = baseSplit.run / 100;
+
+    if (strengthWeakness) {
+        const weakBonus = 0.05;
+        const strongReduction = 0.03;
+
+        // Boost weakest
+        if (strengthWeakness.weakest === 'swim') swimPercent += weakBonus;
+        else if (strengthWeakness.weakest === 'bike') bikePercent += weakBonus;
+        else if (strengthWeakness.weakest === 'run') runPercent += weakBonus;
+
+        // Slightly reduce strongest
+        if (strengthWeakness.strongest === 'swim') swimPercent -= strongReduction;
+        else if (strengthWeakness.strongest === 'bike') bikePercent -= strongReduction;
+        else if (strengthWeakness.strongest === 'run') runPercent -= strongReduction;
+    }
+
+    // Reserve 5% for strength
     const strengthPercent = 0.05;
+    const totalDiscipline = swimPercent + bikePercent + runPercent;
+    const scaleFactor = (1 - strengthPercent) / totalDiscipline;
+    swimPercent *= scaleFactor;
+    bikePercent *= scaleFactor;
+    runPercent *= scaleFactor;
 
     // Weekly structure by phase
     interface DayPlan {
@@ -801,7 +830,7 @@ function generateWeekWorkouts(
 // Main Generator Function
 // ============================================
 
-export function generateTrainingPlan(config: RaceConfig): TrainingPlan {
+export function generateTrainingPlan(config: RaceConfig, profile?: AthleteProfile): TrainingPlan {
     const today = new Date();
     const raceDate = new Date(config.raceDate);
     const totalWeeks = getWeeksBetween(today, raceDate);
@@ -829,7 +858,15 @@ export function generateTrainingPlan(config: RaceConfig): TrainingPlan {
 
         for (let phaseWeek = 1; phaseWeek <= phaseWeeks && currentWeek <= totalWeeks; phaseWeek++) {
             const weeklyHours = getWeeklyVolume(currentWeek, totalWeeks, config.maxWeeklyHours, phase);
-            const days = generateWeekWorkouts(phase, weeklyHours, config.distance.id, currentWeek, weekStartDate);
+            const days = generateWeekWorkouts(
+                phase,
+                weeklyHours,
+                config.distance.id,
+                currentWeek,
+                weekStartDate,
+                profile?.disciplineSplit,
+                profile?.strengthWeakness
+            );
 
             weeks.push({
                 weekNumber: currentWeek,

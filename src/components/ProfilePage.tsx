@@ -4,8 +4,16 @@
  */
 
 import { useState } from 'react';
-import type { AthleteProfile, ExperienceLevel, DayOfWeek, Injury } from '../types/athlete';
-import { calculateHeartRateZones } from '../types/athlete';
+import type {
+    AthleteProfile,
+    ExperienceLevel,
+    DayOfWeek,
+    Injury,
+    Equipment,
+    StrengthWeakness,
+    Discipline
+} from '../types/athlete';
+import { calculateZonesFromAge, calculateZonesFromLTHR, DEFAULT_EQUIPMENT } from '../types/athlete';
 import './ProfilePage.css';
 
 interface ProfilePageProps {
@@ -48,13 +56,24 @@ export function ProfilePage({ profile, onSave, onPlanRegenerate }: ProfilePagePr
     const [disciplineSplit, setDisciplineSplit] = useState(
         profile?.disciplineSplit || { swim: 20, bike: 45, run: 35 }
     );
-    const [age, setAge] = useState('35');
+    const [age, setAge] = useState(profile?.age?.toString() || '35');
+    const [trainingYears, setTrainingYears] = useState(profile?.trainingYearsExperience?.toString() || '1');
     const [restingHR, setRestingHR] = useState('60');
     const [injuries, _setInjuries] = useState<Injury[]>(profile?.injuries || []);
+    const [equipment, setEquipment] = useState<Equipment>(profile?.equipment || { ...DEFAULT_EQUIPMENT });
+    const [strengthWeakness, setStrengthWeakness] = useState<StrengthWeakness>(
+        profile?.strengthWeakness || { strongest: 'bike', weakest: 'swim' }
+    );
+    const [lthr, setLthr] = useState(profile?.lactateThresholdHR?.toString() || '');
 
     const handleSave = async () => {
         setIsSaving(true);
         try {
+            // Calculate zones: prefer LTHR if provided, otherwise use age
+            const parsedLthr = parseInt(lthr);
+            const heartRateZones = parsedLthr > 0
+                ? calculateZonesFromLTHR(parsedLthr)
+                : calculateZonesFromAge(parseInt(age), parseInt(restingHR));
             await onSave({
                 experienceLevel,
                 swimCSS,
@@ -62,8 +81,13 @@ export function ProfilePage({ profile, onSave, onPlanRegenerate }: ProfilePagePr
                 runThresholdPace,
                 restDayPreferences: restDays,
                 disciplineSplit,
-                heartRateZones: calculateHeartRateZones(parseInt(age), parseInt(restingHR)),
+                heartRateZones,
                 injuries,
+                age: parseInt(age) || undefined,
+                trainingYearsExperience: parseInt(trainingYears) || undefined,
+                lactateThresholdHR: parsedLthr > 0 ? parsedLthr : undefined,
+                equipment,
+                strengthWeakness,
             });
             setIsEditing(false);
             onPlanRegenerate();
@@ -190,6 +214,16 @@ export function ProfilePage({ profile, onSave, onPlanRegenerate }: ProfilePagePr
                                     onChange={e => setRunThresholdPace(e.target.value)}
                                 />
                             </div>
+                            <div className="metric-input">
+                                <span className="metric-label">❤️ LTHR (preferred for zones)</span>
+                                <input
+                                    type="number"
+                                    placeholder="From 30-min test"
+                                    value={lthr}
+                                    onChange={e => setLthr(e.target.value)}
+                                />
+                                <span className="metric-unit">bpm</span>
+                            </div>
                         </div>
                     </div>
 
@@ -266,6 +300,83 @@ export function ProfilePage({ profile, onSave, onPlanRegenerate }: ProfilePagePr
                                     onChange={e => setRestingHR(e.target.value)}
                                 />
                                 <span className="metric-unit">bpm</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Training Experience */}
+                    <div className="form-group">
+                        <label>Training Background</label>
+                        <div className="metrics-grid">
+                            <div className="metric-input">
+                                <span className="metric-label">Years of Training</span>
+                                <input
+                                    type="number"
+                                    value={trainingYears}
+                                    onChange={e => setTrainingYears(e.target.value)}
+                                    min={0}
+                                    max={50}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Equipment */}
+                    <div className="form-group">
+                        <label>Equipment Access</label>
+                        <div className="equipment-grid">
+                            {[
+                                { key: 'hasPoolAccess', label: '🏊 Pool Access' },
+                                { key: 'hasBikeTrainer', label: '🚴 Indoor Trainer' },
+                                { key: 'hasGymAccess', label: '🏋️ Gym Access' },
+                                { key: 'hasPowerMeter', label: '⚡ Power Meter' },
+                                { key: 'hasHeartRateMonitor', label: '❤️ HR Monitor' },
+                            ].map(({ key, label }) => (
+                                <button
+                                    key={key}
+                                    type="button"
+                                    className={`equipment-btn ${equipment[key as keyof Equipment] ? 'active' : ''}`}
+                                    onClick={() => setEquipment({ ...equipment, [key]: !equipment[key as keyof Equipment] })}
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Strength/Weakness */}
+                    <div className="form-group">
+                        <label>Self Assessment</label>
+                        <div className="strength-grid">
+                            <div className="strength-select">
+                                <span className="strength-label">Strongest Discipline</span>
+                                <div className="discipline-options">
+                                    {(['swim', 'bike', 'run'] as Discipline[]).map(d => (
+                                        <button
+                                            key={d}
+                                            type="button"
+                                            className={`discipline-btn ${strengthWeakness.strongest === d ? 'active strongest' : ''}`}
+                                            onClick={() => setStrengthWeakness({ ...strengthWeakness, strongest: d })}
+                                        >
+                                            {d === 'swim' ? '🏊' : d === 'bike' ? '🚴' : '🏃'} {d}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="strength-select">
+                                <span className="strength-label">Weakest Discipline</span>
+                                <div className="discipline-options">
+                                    {(['swim', 'bike', 'run'] as Discipline[]).map(d => (
+                                        <button
+                                            key={d}
+                                            type="button"
+                                            className={`discipline-btn ${strengthWeakness.weakest === d ? 'active weakest' : ''}`}
+                                            onClick={() => setStrengthWeakness({ ...strengthWeakness, weakest: d })}
+                                        >
+                                            {d === 'swim' ? '🏊' : d === 'bike' ? '🚴' : '🏃'} {d}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -392,6 +503,55 @@ export function ProfilePage({ profile, onSave, onPlanRegenerate }: ProfilePagePr
                             </div>
                         </div>
                     )}
+
+                    {/* Training Background */}
+                    <div className="profile-card">
+                        <h3>Training Background</h3>
+                        <div className="metrics-display">
+                            <div className="metric-item">
+                                <span className="metric-icon">📅</span>
+                                <span>{profile?.age || '-'} years old</span>
+                            </div>
+                            <div className="metric-item">
+                                <span className="metric-icon">📈</span>
+                                <span>{profile?.trainingYearsExperience || '-'} years training</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Equipment */}
+                    <div className="profile-card">
+                        <h3>Equipment Access</h3>
+                        <div className="equipment-display">
+                            {profile?.equipment?.hasPoolAccess && <span className="equipment-tag">🏊 Pool</span>}
+                            {profile?.equipment?.hasBikeTrainer && <span className="equipment-tag">🚴 Trainer</span>}
+                            {profile?.equipment?.hasGymAccess && <span className="equipment-tag">🏋️ Gym</span>}
+                            {profile?.equipment?.hasPowerMeter && <span className="equipment-tag">⚡ Power</span>}
+                            {profile?.equipment?.hasHeartRateMonitor && <span className="equipment-tag">❤️ HR</span>}
+                            {!profile?.equipment && <span className="no-data">Not set</span>}
+                        </div>
+                    </div>
+
+                    {/* Self Assessment */}
+                    <div className="profile-card">
+                        <h3>Self Assessment</h3>
+                        <div className="assessment-display">
+                            <div className="assessment-item strongest">
+                                <span className="assessment-label">Strongest</span>
+                                <span className="assessment-value">
+                                    {profile?.strengthWeakness?.strongest === 'swim' ? '🏊' :
+                                        profile?.strengthWeakness?.strongest === 'bike' ? '🚴' : '🏃'} {profile?.strengthWeakness?.strongest || '-'}
+                                </span>
+                            </div>
+                            <div className="assessment-item weakest">
+                                <span className="assessment-label">Weakest</span>
+                                <span className="assessment-value">
+                                    {profile?.strengthWeakness?.weakest === 'swim' ? '🏊' :
+                                        profile?.strengthWeakness?.weakest === 'bike' ? '🚴' : '🏃'} {profile?.strengthWeakness?.weakest || '-'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>
