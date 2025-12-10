@@ -295,6 +295,7 @@ Added rules 16-20 to `.agent/workflows/project-rules.md`:
 | B-027 | ✅ Done | Deployed to Vercel |
 | B-029 | ✅ Done | 41 tests, GitHub Actions CI |
 | B-031 | New | Sentry Error Tracking added to backlog |
+| B-032 | New | Privacy Policy (Blocker for API access) |
 
 ### Next Actions
 
@@ -329,3 +330,29 @@ All estimates assume AI-assisted development with Claude Opus 4.5 + Antigravity 
 
 **Total Backlog: ~317-486 hours**  
 **v1.0 Milestone: ~32-50 hours**
+
+
+## Session 4: Sprint 1.0 - Privacy Policy (B-032) ✅
+
+### What Was Built
+1.  **Privacy Policy Page:**
+    -   Global `/privacy` route accessible to both authenticated and anonymous users.
+    -   Professional "Hero" design with dark branding.
+    -   GDPR/CCPA compliant text + Garmin/Strava specific API clauses.
+
+2.  **Global Footer:**
+    -   New professional 4-column footer component (`Footer.tsx`).
+    -   Replaced legacy inline footer on Landing Page.
+    -   Integrated into `AppLayout.tsx`.
+
+3.  **UI Polish & Refactor:**
+    -   Switched from Tailwind classes (which were missing) to **Custom Vanilla CSS Modules** (`PrivacyPolicy.css`, `Footer.css`).
+    -   Implemented responsive card layout.
+
+### Critical Bug Fixes
+-   **React Navigation Crash:** Fixed an "Order of Hooks" violation where early return for `/privacy` caused the app to crash when navigating from the dashboard. Moved route handling to the end of `App.tsx` logic.
+
+### Backlog Updates
+| Item | Status | Notes |
+|------|--------|-------|
+| B-032 | ✅ Done | Ready for API reviews |

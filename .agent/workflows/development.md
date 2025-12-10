@@ -42,13 +42,14 @@ This document defines the **recommended order** for implementing features from `
 
 | # | Feature | Backlog ID | Estimate | Dependencies |
 |---|---------|------------|----------|--------------|
-| 1.0 | Backend Infrastructure | B-000 | 10-14h | None |
-| 1.1 | Strava Integration | B-002 | 8-12h | B-000 |
-| 1.2 | Strava Fitness Data Import | B-008 | 6-10h | B-002 |
-| 1.3 | Garmin Connect Integration | B-001 | 15-20h | B-000 |
-| 1.4 | Push Workouts to Garmin | B-006 | 14-20h | B-001 |
+| 1.0 | Privacy Policy | B-032 | 2-4h | None (Blocker for 1.3) |
+| 1.1 | Backend Infrastructure | B-000 | 10-14h | None |
+| 1.2 | Strava Integration | B-002 | 8-12h | B-000 |
+| 1.3 | Garmin Connect Integration | B-001 | 15-20h | B-000, B-032 |
+| 1.4 | Strava Fitness Data Import | B-008 | 6-10h | B-002 |
+| 1.5 | Push Workouts to Garmin | B-006 | 14-20h | B-001 |
 
-**Sprint 1 Total: ~53-76 hours**
+**Sprint 1 Total: ~55-80 hours**
 
 ---
 

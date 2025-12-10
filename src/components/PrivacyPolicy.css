@@ -1,0 +1,179 @@
+/* Privacy Policy Styles */
+.privacy-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--neutral-50);
+}
+
+.privacy-hero {
+    background: var(--neutral-900);
+    padding-bottom: 8rem;
+    /* Space for card overlap */
+    padding-top: 2rem;
+    color: white;
+}
+
+.privacy-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+}
+
+.privacy-back-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--neutral-400);
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.privacy-back-link:hover {
+    color: white;
+}
+
+.privacy-label {
+    color: var(--neutral-500);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.privacy-header-content {
+    max-width: 800px;
+}
+
+.privacy-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.privacy-subtitle {
+    font-size: 1.125rem;
+    color: var(--neutral-400);
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+.privacy-date {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--neutral-500);
+    font-family: monospace;
+}
+
+.privacy-main {
+    flex-grow: 1;
+    width: 100%;
+    max-width: 1000px;
+    margin: -6rem auto 3rem;
+    /* Negative margin for overlap */
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 10;
+}
+
+.privacy-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--neutral-200);
+}
+
+/* Typography for the prose content */
+.privacy-content section {
+    margin-bottom: 2.5rem;
+}
+
+.privacy-content h2 {
+    font-size: 1.5rem;
+    color: var(--neutral-900);
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--neutral-200);
+    padding-bottom: 0.5rem;
+}
+
+.privacy-content p {
+    margin-bottom: 1rem;
+    color: var(--neutral-600);
+    line-height: 1.7;
+}
+
+.privacy-content ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--neutral-600);
+}
+
+.privacy-content li {
+    margin-bottom: 0.5rem;
+}
+
+.privacy-content a {
+    color: var(--primary-600);
+    text-decoration: underline;
+}
+
+.privacy-content a:hover {
+    color: var(--primary-700);
+}
+
+/* API Disclosure Box */
+.api-disclosure {
+    background-color: #eff6ff;
+    /* primary-50 */
+    border: 1px solid #dbeafe;
+    /* primary-100 */
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.api-disclosure-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.api-disclosure-title {
+    font-weight: 700;
+    color: var(--primary-900);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.api-disclosure p,
+.api-disclosure ul {
+    color: var(--primary-800);
+    font-size: 0.95rem;
+}
+
+.api-disclosure-note {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--primary-700);
+}
+
+@media (max-width: 640px) {
+    .privacy-card {
+        padding: 1.5rem;
+    }
+
+    .privacy-hero {
+        padding-top: 1rem;
+        padding-bottom: 6rem;
+        /* reduce overlap space */
+    }
+}

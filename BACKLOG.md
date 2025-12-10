@@ -1028,6 +1028,144 @@ Integrate Sentry for production error tracking and monitoring. Captures JavaScri
 
 ---
 
+## 📝 B-032: Privacy Policy & Data Usage Statement
+
+| Field | Value |
+|-------|-------|
+| **Priority** | P1 - Critical |
+| **Value** | ⭐⭐⭐⭐ High |
+| **Effort** | **2-4 hours** |
+| **Status** | ✅ Done |
+
+### Description
+Create a public-facing Privacy Policy page that clearly articulates how the application collects, uses, stores, and shares user data. This is a strict requirement for gaining access to Garmin and Strava APIs.
+
+### User Value
+- Transparency and trust regarding data handling
+- Compliance with API partner requirements (Garmin/Strava)
+- Compliance with data privacy regulations (GDPR/CCPA basics)
+
+### Acceptance Criteria
+- [x] Dedicated route `/privacy` accessible without login
+- [x] Link in footer and sign-up page
+- [x] Explicit section on Garmin/Strava data usage
+- [x] Statement that data is not sold to third parties
+- [x] Contact mechanism for data deletion requests
+- [x] Content approved by user/legal
+
+### Dependencies
+- None (but blocks B-001 and B-002 applications)
+
+---
+
+## 📜 B-033: Terms of Service Page
+
+| Field | Value |
+|-------|-------|
+| **Priority** | P3 - Medium |
+| **Value** | ⭐⭐⭐⭐ High |
+| **Effort** | **4-6 hours** |
+| **Status** | Not Started |
+
+### Description
+Create a Terms of Service (ToS) page to define the legal relationship between the service and its users.
+
+### User Value
+- Legal protection for the platform
+- Clear rules of acceptable use
+- Liability limitations
+
+### Acceptance Criteria
+- [ ] Dedicated route `/terms`
+- [ ] Content covers: Liability, User Conduct, Termination, Disclaimers
+- [ ] Link in Footer (currently disabled)
+- [ ] "I agree" checkbox on signup (optional for mvp)
+
+### Dependencies
+- B-032 (Privacy Policy) precedent
+
+---
+
+## 📧 B-034: Support & Contact Infrastructure
+
+| Field | Value |
+|-------|-------|
+| **Priority** | P3 - Medium |
+| **Value** | ⭐⭐⭐⭐ High |
+| **Effort** | **2-4 hours** |
+| **Status** | Not Started |
+
+### Description
+Establish the support channels mentioned in the Privacy Policy and Footer.
+
+### User Value
+- Ability to report bugs or request help
+- Mechanism for data deletion requests (GDPR)
+
+### Acceptance Criteria
+- [ ] Set up email aliases (`support@`, `privacy@`) OR contact form
+- [ ] Verify email delivery
+- [ ] Document response SLA (internal)
+- [ ] Update `mailto` links in Footer/Privacy Policy if using form
+
+### Dependencies
+- Domain email configuration (Vercel/Google Workspace)
+
+---
+
+## 📚 B-035: Content Hub (Resources)
+
+| Field | Value |
+|-------|-------|
+| **Priority** | P5 - Future |
+| **Value** | ⭐⭐ Low |
+| **Effort** | **Flexible** |
+| **Status** | Not Started |
+
+### Description
+Create the resource content pages linked in the Footer to build authority and SEO value.
+
+### User Value
+- Education on triathlon basics
+- Race day preparation help
+
+### Acceptance Criteria
+- [ ] Blog / Articles section
+- [ ] Training Guides (static content)
+- [ ] Race Day Checklist (interactive or PDF)
+- [ ] Remove "Coming Soon" from Footer
+
+### Dependencies
+- Content writing
+
+---
+
+## 📢 B-036: Landing Page Content Compliance
+
+| Field | Value |
+|-------|-------|
+| **Priority** | P3 - Medium |
+| **Value** | ⭐⭐⭐ Medium |
+| **Effort** | **4-6 hours** |
+| **Status** | Not Started |
+
+### Description
+Ensure Landing Page contains all sections linked in navigation to prevent broken UX.
+
+### User Value
+- Consistent navigation experience
+- Social proof (Testimonials)
+
+### Acceptance Criteria
+- [ ] Add "Testimonials" section (`id="testimonials"`)
+- [ ] Add/Fix "About" section (`id="about"`)
+- [ ] Populate with placeholder or real content
+
+### Dependencies
+- None
+
+---
+
 ## Effort Legend
 | Hours | Complexity |
 |-------|------------|
