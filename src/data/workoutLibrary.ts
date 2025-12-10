@@ -17,6 +17,7 @@ export const SWIM_WORKOUTS: LibraryWorkout[] = [
         title: 'CSS Test (Critical Swim Speed)',
         description: 'Determine your threshold pace for structured swim training',
         difficulty: 'intermediate',
+        intensity: 'threshold',
         equipment: ['pool', 'stopwatch'],
         variations: [
             {
@@ -42,6 +43,7 @@ export const SWIM_WORKOUTS: LibraryWorkout[] = [
         title: 'Steady State Endurance',
         description: 'Build aerobic base with continuous swimming',
         difficulty: 'beginner',
+        intensity: 'moderate',
         equipment: ['pool'],
         variations: [
             {
@@ -84,6 +86,7 @@ export const SWIM_WORKOUTS: LibraryWorkout[] = [
         title: '100m Repeats',
         description: 'Build speed and lactate threshold with structured intervals',
         difficulty: 'intermediate',
+        intensity: 'threshold',
         equipment: ['pool', 'pace clock'],
         variations: [
             {
@@ -117,6 +120,7 @@ export const SWIM_WORKOUTS: LibraryWorkout[] = [
         title: 'Technique & Drill Focus',
         description: 'Improve swim efficiency with targeted drills',
         difficulty: 'beginner',
+        intensity: 'easy',
         equipment: ['pool', 'pull buoy', 'kickboard'],
         variations: [
             {
@@ -142,6 +146,7 @@ export const SWIM_WORKOUTS: LibraryWorkout[] = [
         title: 'Pyramid Set',
         description: 'Build speed and endurance with ascending/descending intervals',
         difficulty: 'intermediate',
+        intensity: 'threshold',
         equipment: ['pool', 'pace clock'],
         variations: [
             {
@@ -166,6 +171,7 @@ export const SWIM_WORKOUTS: LibraryWorkout[] = [
         title: 'Open Water Preparation',
         description: 'Practice sighting and race-specific skills',
         difficulty: 'intermediate',
+        intensity: 'moderate',
         equipment: ['pool'],
         variations: [
             {
@@ -197,6 +203,7 @@ export const BIKE_WORKOUTS: LibraryWorkout[] = [
         title: 'FTP Test (20 min)',
         description: 'Determine your Functional Threshold Power for training zones',
         difficulty: 'advanced',
+        intensity: 'threshold',
         equipment: ['bike', 'power meter or trainer'],
         variations: [
             {
@@ -221,6 +228,7 @@ export const BIKE_WORKOUTS: LibraryWorkout[] = [
         title: 'Aerobic Base Ride',
         description: 'Build aerobic foundation with steady-state riding',
         difficulty: 'beginner',
+        intensity: 'moderate',
         equipment: ['bike'],
         variations: [
             {
@@ -273,6 +281,7 @@ export const BIKE_WORKOUTS: LibraryWorkout[] = [
         title: 'VO2max Intervals',
         description: 'High-intensity intervals to build aerobic capacity',
         difficulty: 'advanced',
+        intensity: 'intervals',
         equipment: ['bike', 'power meter or heart rate monitor'],
         variations: [
             {
@@ -305,6 +314,7 @@ export const BIKE_WORKOUTS: LibraryWorkout[] = [
         title: 'Sweet Spot Training',
         description: 'Build sustained power at 88-94% of FTP',
         difficulty: 'intermediate',
+        intensity: 'tempo',
         equipment: ['bike', 'power meter or trainer'],
         variations: [
             {
@@ -342,6 +352,7 @@ export const BIKE_WORKOUTS: LibraryWorkout[] = [
         title: 'Hill Repeats',
         description: 'Build climbing strength and power',
         difficulty: 'intermediate',
+        intensity: 'threshold',
         equipment: ['bike with hills or trainer with incline'],
         variations: [
             {
@@ -364,6 +375,7 @@ export const BIKE_WORKOUTS: LibraryWorkout[] = [
         title: 'Tempo Cruise',
         description: 'Sustained race-pace effort for endurance',
         difficulty: 'intermediate',
+        intensity: 'tempo',
         equipment: ['bike'],
         variations: [
             {
@@ -398,6 +410,7 @@ export const BIKE_WORKOUTS: LibraryWorkout[] = [
         title: 'Active Recovery Ride',
         description: 'Easy spinning to promote recovery',
         difficulty: 'beginner',
+        intensity: 'recovery',
         equipment: ['bike'],
         variations: [
             {
@@ -426,6 +439,7 @@ export const BIKE_WORKOUTS: LibraryWorkout[] = [
         title: 'Cadence & Efficiency Drills',
         description: 'Improve pedaling efficiency with cadence work',
         difficulty: 'beginner',
+        intensity: 'easy',
         equipment: ['bike with cadence sensor'],
         variations: [
             {
@@ -459,6 +473,7 @@ export const RUN_WORKOUTS: LibraryWorkout[] = [
         title: 'Easy Recovery Run',
         description: 'Active recovery with very easy effort',
         difficulty: 'beginner',
+        intensity: 'easy',
         equipment: [],
         variations: [
             {
@@ -489,6 +504,7 @@ export const RUN_WORKOUTS: LibraryWorkout[] = [
         title: 'Aerobic Base Run',
         description: 'Build running endurance at moderate effort',
         difficulty: 'beginner',
+        intensity: 'moderate',
         equipment: [],
         variations: [
             {
@@ -531,6 +547,7 @@ export const RUN_WORKOUTS: LibraryWorkout[] = [
         title: 'Tempo Run',
         description: 'Build lactate threshold with sustained hard effort',
         difficulty: 'intermediate',
+        intensity: 'tempo',
         equipment: [],
         variations: [
             {
@@ -563,6 +580,7 @@ export const RUN_WORKOUTS: LibraryWorkout[] = [
         title: 'Track Intervals (400m)',
         description: 'Build speed and running economy with short intervals',
         difficulty: 'intermediate',
+        intensity: 'intervals',
         equipment: ['track or measured path'],
         variations: [
             {
@@ -597,6 +615,7 @@ export const RUN_WORKOUTS: LibraryWorkout[] = [
         title: 'Fartlek (Speed Play)',
         description: 'Unstructured speed work with natural terrain changes',
         difficulty: 'intermediate',
+        intensity: 'intervals',
         equipment: [],
         variations: [
             {
@@ -619,6 +638,7 @@ export const RUN_WORKOUTS: LibraryWorkout[] = [
         title: 'Long Run',
         description: 'Build endurance with extended aerobic running',
         difficulty: 'intermediate',
+        intensity: 'moderate',
         equipment: [],
         variations: [
             {
@@ -661,6 +681,7 @@ export const RUN_WORKOUTS: LibraryWorkout[] = [
         title: 'Hill Repeats',
         description: 'Build running strength and power on inclines',
         difficulty: 'intermediate',
+        intensity: 'threshold',
         equipment: ['hill or treadmill with incline'],
         variations: [
             {
@@ -683,6 +704,7 @@ export const RUN_WORKOUTS: LibraryWorkout[] = [
         title: 'Progression Run',
         description: 'Start easy and progressively increase pace',
         difficulty: 'intermediate',
+        intensity: 'tempo',
         equipment: [],
         variations: [
             {
@@ -713,6 +735,7 @@ export const BRICK_WORKOUTS: LibraryWorkout[] = [
         title: 'Short Brick',
         description: 'Quick bike-to-run transition practice',
         difficulty: 'beginner',
+        intensity: 'moderate',
         equipment: ['bike', 'running shoes'],
         variations: [
             {
@@ -736,6 +759,7 @@ export const BRICK_WORKOUTS: LibraryWorkout[] = [
         title: 'Race Simulation Brick',
         description: 'Full race-pace bike and run simulation',
         difficulty: 'advanced',
+        intensity: 'tempo',
         equipment: ['bike', 'running shoes', 'race nutrition'],
         variations: [
             {
@@ -762,6 +786,7 @@ export const BRICK_WORKOUTS: LibraryWorkout[] = [
         title: 'Long Endurance Brick',
         description: 'Extended bike-to-run for half/full distance prep',
         difficulty: 'advanced',
+        intensity: 'moderate',
         equipment: ['bike', 'running shoes', 'nutrition'],
         variations: [
             {
@@ -794,6 +819,7 @@ export const STRENGTH_WORKOUTS: LibraryWorkout[] = [
         title: 'Core Circuit',
         description: 'Build core stability for all three disciplines',
         difficulty: 'beginner',
+        intensity: 'moderate',
         equipment: ['mat'],
         variations: [
             {
@@ -819,6 +845,7 @@ export const STRENGTH_WORKOUTS: LibraryWorkout[] = [
         title: 'Runner\'s Strength',
         description: 'Build running-specific strength and injury prevention',
         difficulty: 'intermediate',
+        intensity: 'moderate',
         equipment: ['mat', 'optional dumbbells'],
         variations: [
             {
@@ -845,6 +872,7 @@ export const STRENGTH_WORKOUTS: LibraryWorkout[] = [
         title: 'Full Body Strength',
         description: 'Comprehensive strength session for overall fitness',
         difficulty: 'intermediate',
+        intensity: 'moderate',
         equipment: ['mat', 'dumbbells or resistance bands'],
         variations: [
             {
@@ -872,6 +900,7 @@ export const STRENGTH_WORKOUTS: LibraryWorkout[] = [
         title: 'Swimmer\'s Dryland',
         description: 'Build swim-specific strength out of the pool',
         difficulty: 'intermediate',
+        intensity: 'moderate',
         equipment: ['mat', 'resistance band'],
         variations: [
             {
@@ -932,4 +961,35 @@ export function getWorkoutById(id: string): LibraryWorkout | undefined {
 export function getVariationById(workoutId: string, variationId: string) {
     const workout = getWorkoutById(workoutId);
     return workout?.variations.find(v => v.id === variationId);
+}
+
+/**
+ * Get workouts filtered by intensity level
+ * Useful for polarized training plan generation (80/20 distribution)
+ */
+export function getWorkoutsByIntensity(intensity: LibraryWorkout['intensity']): LibraryWorkout[] {
+    return WORKOUT_LIBRARY.filter(workout => workout.intensity === intensity);
+}
+
+/**
+ * Classify intensity as low, moderate, or high for polarized training
+ * Low: recovery, easy
+ * Moderate: moderate (gray zone - minimize in polarized training)
+ * High: tempo, threshold, intervals, race
+ */
+export function classifyIntensity(intensity: LibraryWorkout['intensity']): 'low' | 'moderate' | 'high' {
+    switch (intensity) {
+        case 'recovery':
+        case 'easy':
+            return 'low';
+        case 'moderate':
+            return 'moderate';
+        case 'tempo':
+        case 'threshold':
+        case 'intervals':
+        case 'race':
+            return 'high';
+        default:
+            return 'moderate';
+    }
 }

@@ -35,6 +35,8 @@ export interface LibraryWorkout {
     title: string;
     description: string;
     difficulty: DifficultyLevel;
+    /** Primary intensity level for training load calculations and polarized training distribution */
+    intensity: Intensity;
     equipment?: string[]; // e.g., ["pool", "pull buoy"] or ["trainer", "power meter"]
     variations: WorkoutVariation[];
     tips?: string[];
