@@ -5,13 +5,10 @@
 
 import type { ReactNode } from 'react';
 import { AppHeader } from './AppHeader';
-import type { AppView } from './AppHeader';
 import './AppLayout.css';
 
 interface AppLayoutProps {
     children: ReactNode;
-    currentView: AppView;
-    onNavigate: (view: AppView) => void;
     onSignOut: () => void;
     userName?: string;
     raceName?: string;
@@ -20,8 +17,6 @@ interface AppLayoutProps {
 
 export function AppLayout({
     children,
-    currentView,
-    onNavigate,
     onSignOut,
     userName,
     raceName,
@@ -30,8 +25,6 @@ export function AppLayout({
     return (
         <div className="app-layout">
             <AppHeader
-                currentView={currentView}
-                onNavigate={onNavigate}
                 onSignOut={onSignOut}
                 userName={userName}
                 raceName={raceName}

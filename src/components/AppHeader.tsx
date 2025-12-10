@@ -3,13 +3,22 @@
  * Shared navigation header for all authenticated screens
  */
 
+import { Link, useLocation } from 'react-router-dom';
 import './AppHeader.css';
 
 export type AppView = 'dashboard' | 'goals' | 'plan' | 'analytics' | 'profile' | 'library';
 
+// Map routes to view names
+const routeToView: Record<string, AppView> = {
+    '/dashboard': 'dashboard',
+    '/goals': 'goals',
+    '/plan': 'plan',
+    '/analytics': 'analytics',
+    '/profile': 'profile',
+    '/library': 'library',
+};
+
 interface AppHeaderProps {
-    currentView: AppView;
-    onNavigate: (view: AppView) => void;
     onSignOut: () => void;
     userName?: string;
     raceName?: string;
@@ -17,13 +26,14 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({
-    currentView,
-    onNavigate,
     onSignOut,
     userName,
     raceName,
     hasPlan
 }: AppHeaderProps) {
+    const location = useLocation();
+    const currentView = routeToView[location.pathname] || 'dashboard';
+
     return (
         <header className="app-header">
             <div className="header-container">
@@ -36,52 +46,52 @@ export function AppHeader({
 
                 {/* Navigation Tabs */}
                 <nav className="header-nav">
-                    <button
-                        className={`nav-tab ${currentView === 'dashboard' ? 'active' : ''}`}
-                        onClick={() => onNavigate('dashboard')}
-                        disabled={!hasPlan}
+                    <Link
+                        to="/dashboard"
+                        className={`nav-tab ${currentView === 'dashboard' ? 'active' : ''} ${!hasPlan ? 'disabled' : ''}`}
+                        onClick={(e) => !hasPlan && e.preventDefault()}
                     >
                         <span className="tab-icon">🏠</span>
                         <span className="tab-label">Dashboard</span>
-                    </button>
-                    <button
-                        className={`nav-tab ${currentView === 'goals' ? 'active' : ''}`}
-                        onClick={() => onNavigate('goals')}
-                        disabled={!hasPlan}
+                    </Link>
+                    <Link
+                        to="/goals"
+                        className={`nav-tab ${currentView === 'goals' ? 'active' : ''} ${!hasPlan ? 'disabled' : ''}`}
+                        onClick={(e) => !hasPlan && e.preventDefault()}
                     >
                         <span className="tab-icon">🎯</span>
                         <span className="tab-label">Goals</span>
-                    </button>
-                    <button
-                        className={`nav-tab ${currentView === 'plan' ? 'active' : ''}`}
-                        onClick={() => onNavigate('plan')}
-                        disabled={!hasPlan}
+                    </Link>
+                    <Link
+                        to="/plan"
+                        className={`nav-tab ${currentView === 'plan' ? 'active' : ''} ${!hasPlan ? 'disabled' : ''}`}
+                        onClick={(e) => !hasPlan && e.preventDefault()}
                     >
                         <span className="tab-icon">📋</span>
                         <span className="tab-label">Plan</span>
-                    </button>
-                    <button
-                        className={`nav-tab ${currentView === 'analytics' ? 'active' : ''}`}
-                        onClick={() => onNavigate('analytics')}
-                        disabled={!hasPlan}
+                    </Link>
+                    <Link
+                        to="/analytics"
+                        className={`nav-tab ${currentView === 'analytics' ? 'active' : ''} ${!hasPlan ? 'disabled' : ''}`}
+                        onClick={(e) => !hasPlan && e.preventDefault()}
                     >
                         <span className="tab-icon">📊</span>
                         <span className="tab-label">Analytics</span>
-                    </button>
-                    <button
+                    </Link>
+                    <Link
+                        to="/library"
                         className={`nav-tab ${currentView === 'library' ? 'active' : ''}`}
-                        onClick={() => onNavigate('library')}
                     >
                         <span className="tab-icon">📚</span>
                         <span className="tab-label">Library</span>
-                    </button>
-                    <button
+                    </Link>
+                    <Link
+                        to="/profile"
                         className={`nav-tab ${currentView === 'profile' ? 'active' : ''}`}
-                        onClick={() => onNavigate('profile')}
                     >
                         <span className="tab-icon">⚙️</span>
                         <span className="tab-label">Profile</span>
-                    </button>
+                    </Link>
                 </nav>
 
                 {/* User Menu */}
@@ -95,3 +105,4 @@ export function AppHeader({
         </header>
     );
 }
+

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import type { RaceDistance, RaceConfig, TrainingPlan, RaceDistanceId } from './types/race';
 import type { AthleteProfile } from './types/athlete';
 import { RACE_DISTANCES } from './types/race';
@@ -13,7 +14,6 @@ import { AppLayout } from './components/AppLayout';
 import { WorkoutLibrary } from './components/WorkoutLibrary';
 import { GoalsPage } from './components/GoalsPage';
 import { AnalyticsPage } from './components/AnalyticsPage';
-import type { AppView } from './components/AppHeader';
 import { useAuth } from './contexts/AuthContext';
 import { useTrainingPlans } from './hooks/useTrainingPlans';
 import { useAthleteProfile } from './hooks/useAthleteProfile';
@@ -23,6 +23,7 @@ function App() {
   const { user, loading: authLoading, signOut } = useAuth();
   const { savePlan, getPlans } = useTrainingPlans();
   const { profile, hasProfile, saveProfile } = useAthleteProfile();
+  const navigate = useNavigate();
 
   const [selectedDistance, setSelectedDistance] = useState<RaceDistance | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,7 +43,6 @@ function App() {
   });
   const [_savedPlanId, setSavedPlanId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
-  const [currentView, setCurrentView] = useState<AppView>('dashboard');
 
   // Load saved plan when user logs in
   useEffect(() => {
@@ -212,68 +212,66 @@ function App() {
     return (
       <>
         <AppLayout
-          currentView={currentView}
-          onNavigate={setCurrentView}
           onSignOut={handleSignOut}
           userName={user.email?.split('@')[0]}
           raceName={trainingPlan.raceConfig.raceName}
           hasPlan={true}
         >
-          {currentView === 'dashboard' && (
-            <Dashboard
-              plan={trainingPlan}
-              userName={user.email?.split('@')[0]}
-            />
-          )}
-          {currentView === 'plan' && (
-            <TrainingPlanView
-              plan={trainingPlan}
-              onBack={() => setCurrentView('dashboard')}
-              onSave={handleSavePlan}
-              saveStatus={saveStatus}
-              isLoggedIn={true}
-              onLoginClick={() => { }}
-              onPlanUpdate={handlePlanUpdate}
-            />
-          )}
-          {currentView === 'goals' && (
-            <GoalsPage
-              currentConfig={trainingPlan.raceConfig}
-              onSave={(newConfig) => {
-                const newPlan = generateTrainingPlan(newConfig, profile || undefined);
-                setTrainingPlan(newPlan);
-                setSaveStatus('idle');
-                // Auto-save for logged-in users
-                savePlan(newPlan).then(({ id, error }) => {
-                  if (!error && id) {
-                    setSavedPlanId(id);
-                    setSaveStatus('saved');
-                  }
-                });
-              }}
-            />
-          )}
-          {currentView === 'library' && (
-            <WorkoutLibrary />
-          )}
-          {currentView === 'analytics' && (
-            <AnalyticsPage plan={trainingPlan} />
-          )}
-          {currentView === 'profile' && (
-            <ProfilePage
-              profile={profile}
-              onSave={async (profileData) => {
-                await saveProfile(profileData);
-              }}
-              onPlanRegenerate={() => {
-                if (trainingPlan) {
-                  const updatedPlan = generateTrainingPlan(trainingPlan.raceConfig, profile || undefined);
-                  setTrainingPlan(updatedPlan);
+          <Routes>
+            <Route path="/dashboard" element={
+              <Dashboard
+                plan={trainingPlan}
+                userName={user.email?.split('@')[0]}
+              />
+            } />
+            <Route path="/plan" element={
+              <TrainingPlanView
+                plan={trainingPlan}
+                onBack={() => navigate('/dashboard')}
+                onSave={handleSavePlan}
+                saveStatus={saveStatus}
+                isLoggedIn={true}
+                onLoginClick={() => { }}
+                onPlanUpdate={handlePlanUpdate}
+              />
+            } />
+            <Route path="/goals" element={
+              <GoalsPage
+                currentConfig={trainingPlan.raceConfig}
+                onSave={(newConfig) => {
+                  const newPlan = generateTrainingPlan(newConfig, profile || undefined);
+                  setTrainingPlan(newPlan);
                   setSaveStatus('idle');
-                }
-              }}
-            />
-          )}
+                  // Auto-save for logged-in users
+                  savePlan(newPlan).then(({ id, error }) => {
+                    if (!error && id) {
+                      setSavedPlanId(id);
+                      setSaveStatus('saved');
+                    }
+                  });
+                }}
+              />
+            } />
+            <Route path="/library" element={<WorkoutLibrary />} />
+            <Route path="/analytics" element={<AnalyticsPage plan={trainingPlan} />} />
+            <Route path="/profile" element={
+              <ProfilePage
+                profile={profile}
+                onSave={async (profileData) => {
+                  await saveProfile(profileData);
+                }}
+                onPlanRegenerate={() => {
+                  if (trainingPlan) {
+                    const updatedPlan = generateTrainingPlan(trainingPlan.raceConfig, profile || undefined);
+                    setTrainingPlan(updatedPlan);
+                    setSaveStatus('idle');
+                  }
+                }}
+              />
+            } />
+            {/* Default redirect to dashboard */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
         </AppLayout>
         <AuthModal
           isOpen={isAuthModalOpen}
