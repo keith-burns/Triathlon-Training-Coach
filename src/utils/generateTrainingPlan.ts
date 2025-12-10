@@ -14,7 +14,8 @@ import type {
     RaceDistanceId,
 } from '../types/race';
 
-import type { AthleteProfile, DisciplineSplit, StrengthWeakness } from '../types/athlete';
+import type { AthleteProfile, DisciplineSplit, StrengthWeakness, DayOfWeek } from '../types/athlete';
+import { adjustRestDays } from './trainingPlanLogic';
 
 // ============================================
 // Helper Functions
@@ -31,7 +32,10 @@ function addDays(date: Date, days: number): Date {
 }
 
 function formatDate(date: Date): string {
-    return date.toISOString().split('T')[0];
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 function getDayOfWeek(date: Date): string {
@@ -695,7 +699,8 @@ function generateWeekWorkouts(
     weekNumber: number,
     startDate: Date,
     disciplineSplit?: DisciplineSplit,
-    strengthWeakness?: StrengthWeakness
+    strengthWeakness?: StrengthWeakness,
+    preferredRestDays?: DayOfWeek[]
 ): TrainingDay[] {
     const days: TrainingDay[] = [];
     const minutesAvailable = weeklyHours * 60;
@@ -823,7 +828,7 @@ function generateWeekWorkouts(
         });
     }
 
-    return days;
+    return adjustRestDays(days, preferredRestDays || []);
 }
 
 // ============================================
@@ -840,10 +845,11 @@ export function generateTrainingPlan(config: RaceConfig, profile?: AthleteProfil
 
     let currentWeek = 1;
     let weekStartDate = new Date(today);
-    // Start on next Monday
-    const dayOfWeek = weekStartDate.getDay();
-    const daysUntilMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
-    weekStartDate = addDays(weekStartDate, daysUntilMonday);
+    // Start on Monday of the CURRENT week
+    const dayOfWeek = weekStartDate.getDay(); // 0 (Sun) to 6 (Sat)
+    // If today is Monday(1), diff is 0. If Tuesday(2), diff is 1. Sun(0) -> 6.
+    const daysSinceMonday = (dayOfWeek + 6) % 7;
+    weekStartDate = addDays(weekStartDate, -daysSinceMonday);
 
     const phaseOrder: TrainingPhase[] = ['base', 'build', 'peak', 'taper'];
 
@@ -865,7 +871,8 @@ export function generateTrainingPlan(config: RaceConfig, profile?: AthleteProfil
                 currentWeek,
                 weekStartDate,
                 profile?.disciplineSplit,
-                profile?.strengthWeakness
+                profile?.strengthWeakness,
+                profile?.restDayPreferences
             );
 
             weeks.push({

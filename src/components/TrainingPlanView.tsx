@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { TrainingPlan, Workout, Discipline, WorkoutCompletion } from '../types/race';
+import { recalculateWeekSummary } from '../utils/trainingPlanLogic';
 import { WorkoutEditModal } from './WorkoutEditModal';
 import { WorkoutSwapModal } from './WorkoutSwapModal';
 import { WorkoutCompletionModal } from './WorkoutCompletionModal';
@@ -14,6 +15,7 @@ interface TrainingPlanViewProps {
     isLoggedIn?: boolean;
     onLoginClick?: () => void;
     onPlanUpdate?: (updatedPlan: TrainingPlan) => void;
+    onRegenerate?: () => void;
 }
 
 interface EditingWorkout {
@@ -39,7 +41,8 @@ export function TrainingPlanView({
     saveStatus = 'idle',
     isLoggedIn = false,
     onLoginClick,
-    onPlanUpdate
+    onPlanUpdate,
+    onRegenerate
 }: TrainingPlanViewProps) {
     const [selectedWeek, setSelectedWeek] = useState(0);
     const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
@@ -151,6 +154,9 @@ export function TrainingPlanView({
             ...updatedWorkout,
         };
 
+        // Recalculate totals for this week
+        updatedPlan.weeks[weekIndex] = recalculateWeekSummary(updatedPlan.weeks[weekIndex]);
+
         onPlanUpdate(updatedPlan);
         setEditingWorkout(null);
     };
@@ -172,6 +178,9 @@ export function TrainingPlanView({
             ...plan.weeks[weekIndex].days[dayIndex].workouts
         ];
         updatedPlan.weeks[weekIndex].days[dayIndex].workouts[workoutIndex] = newWorkout;
+
+        // Recalculate totals for this week
+        updatedPlan.weeks[weekIndex] = recalculateWeekSummary(updatedPlan.weeks[weekIndex]);
 
         onPlanUpdate(updatedPlan);
         setSwappingWorkout(null);
@@ -196,6 +205,9 @@ export function TrainingPlanView({
             ...completingWorkout.workout,
             completion
         };
+
+        // Recalculate totals for this week
+        updatedPlan.weeks[weekIndex] = recalculateWeekSummary(updatedPlan.weeks[weekIndex]);
 
         onPlanUpdate(updatedPlan);
         setCompletingWorkout(null);
@@ -223,13 +235,27 @@ export function TrainingPlanView({
                         Peak volume: {plan.raceConfig.maxWeeklyHours} hrs/week
                     </p>
                 </div>
-                <button
-                    className={`btn save-btn ${saveStatus === 'saved' ? 'btn-success' : saveStatus === 'error' ? 'btn-error' : 'btn-primary'}`}
-                    onClick={isLoggedIn ? onSave : onLoginClick}
-                    disabled={saveStatus === 'saving'}
-                >
-                    {getSaveButtonText()}
-                </button>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    {onRegenerate && (
+                        <button
+                            className="btn btn-outline"
+                            onClick={() => {
+                                if (window.confirm('Are you sure? This will regenerate your entire plan and overwrite any custom edits.')) {
+                                    onRegenerate();
+                                }
+                            }}
+                        >
+                            🔄 Regenerate
+                        </button>
+                    )}
+                    <button
+                        className={`btn save-btn ${saveStatus === 'saved' ? 'btn-success' : saveStatus === 'error' ? 'btn-error' : 'btn-primary'}`}
+                        onClick={isLoggedIn ? onSave : onLoginClick}
+                        disabled={saveStatus === 'saving'}
+                    >
+                        {getSaveButtonText()}
+                    </button>
+                </div>
             </header>
 
             {/* Phase Overview */}

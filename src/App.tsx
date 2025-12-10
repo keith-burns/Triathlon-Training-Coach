@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-
 import type { RaceDistance, RaceConfig, TrainingPlan, RaceDistanceId } from './types/race';
 import type { AthleteProfile } from './types/athlete';
 import { RACE_DISTANCES } from './types/race';
+import { mergeGenericPlans } from './utils/trainingPlanLogic';
 import { generateTrainingPlan } from './utils/generateTrainingPlan';
 import { RaceConfigModal } from './components/RaceConfigModal';
 import { TrainingPlanView } from './components/TrainingPlanView';
@@ -200,6 +201,16 @@ function App() {
     }
   };
 
+  const handleRegeneratePlan = () => {
+    if (trainingPlan) {
+      const updatedPlan = generateTrainingPlan(trainingPlan.raceConfig, profile || undefined);
+      // Merge with old plan to preserve history
+      const mergedPlan = mergeGenericPlans(trainingPlan, updatedPlan);
+      setTrainingPlan(mergedPlan);
+      setSaveStatus('idle');
+    }
+  };
+
   // Handle global routes
   if (location.pathname === '/privacy' || location.pathname === '/privacy/') {
     return <PrivacyPolicy />;
@@ -243,6 +254,7 @@ function App() {
                 isLoggedIn={true}
                 onLoginClick={() => { }}
                 onPlanUpdate={handlePlanUpdate}
+                onRegenerate={handleRegeneratePlan}
               />
             } />
             <Route path="/goals" element={
@@ -273,7 +285,8 @@ function App() {
                 onPlanRegenerate={() => {
                   if (trainingPlan) {
                     const updatedPlan = generateTrainingPlan(trainingPlan.raceConfig, profile || undefined);
-                    setTrainingPlan(updatedPlan);
+                    const mergedPlan = mergeGenericPlans(trainingPlan, updatedPlan);
+                    setTrainingPlan(mergedPlan);
                     setSaveStatus('idle');
                   }
                 }}
@@ -304,6 +317,7 @@ function App() {
           isLoggedIn={false}
           onLoginClick={() => setIsAuthModalOpen(true)}
           onPlanUpdate={handlePlanUpdate}
+          onRegenerate={handleRegeneratePlan}
         />
         <AuthModal
           isOpen={isAuthModalOpen}

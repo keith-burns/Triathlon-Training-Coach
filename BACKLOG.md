@@ -310,6 +310,33 @@ Additional user preferences that meaningfully impact training plan generation.
 
 ---
 
+## 🗓️ B-007b: Preferred Discipline Schedule
+| Field | Value |
+|-------|-------|
+| **Priority** | P3 - Medium |
+| **Value** | ⭐⭐⭐⭐ High |
+| **Effort** | **6-10 hours** |
+| **Status** | Not Started |
+
+### Description
+Allow users to specify which discipline they prefer to do on specific days of the week (e.g., "Bike on Monday," "Long Run on Tuesday"). This is a sub-feature of B-007.
+
+### User Value
+- Align training with club schedules (e.g., Masters Swim)
+- Match lifestyle routines
+- Predictable weekly structure
+
+### Acceptance Criteria
+- [ ] UI to select discipline preference for each day
+- [ ] Profile stores day-discipline mapping
+- [ ] Generator uses these constraints for scheduling
+- [ ] Handle conflicts (e.g., 3 swim days requested but only 2 in plan)
+
+### Dependencies
+- B-007 (Enhanced Preferences)
+
+---
+
 ## 📊 B-008: Strava Fitness Data Import
 
 | Field | Value |
@@ -466,6 +493,33 @@ Larger library of structured workouts with search, filter, and favorites.
 
 ### Dependencies
 - None (standalone feature)
+
+---
+
+## 📝 B-012b: Manual Workout Entry
+| Field | Value |
+|-------|-------|
+| **Priority** | P3 - Medium |
+| **Value** | ⭐⭐⭐ Medium |
+| **Effort** | **4-8 hours** |
+| **Status** | Not Started |
+
+### Description
+Allow users to manually add custom workouts to their calendar or select from the library.
+
+### User Value
+- Flexibility to add ad-hoc training
+- Ability to make up missed sessions
+- Add non-structured activities
+
+### Acceptance Criteria
+- [ ] "Add Workout" button on calendar days
+- [ ] Form to create custom workout (duration, intensity, steps)
+- [ ] Option to select from Workout Library
+- [ ] Drag-and-drop support (optional)
+
+### Dependencies
+- B-012 (Expanded Workout Library) beneficial but not required
 
 ---
 
