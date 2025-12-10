@@ -73,6 +73,10 @@ Execute all work as an expert solution architect, full-stack developer, QA engin
 ## 14. Git Hygiene
 - Use meaningful, atomic commits
 - Keep main branch deployable at all times
+- **Before any commit/push, update:**
+  - `BACKLOG.md` - Single source of truth for feature status
+  - `CONVERSATION_SUMMARY.md` - Document significant changes (for feature work)
+- **Note:** `development.md` is a sequence guide only (no status tracking)
 
 ## 15. Local Changes Only
 - Do not make any changes outside of the Triathlon Training Coach project's folder

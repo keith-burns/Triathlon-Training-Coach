@@ -293,7 +293,7 @@ Added rules 16-20 to `.agent/workflows/project-rules.md`:
 | Item | Status | Notes |
 |------|--------|-------|
 | B-027 | ✅ Done | Deployed to Vercel |
-| B-029 | Partial | Vitest installed, initial tests added |
+| B-029 | ✅ Done | 41 tests, GitHub Actions CI |
 | B-031 | New | Sentry Error Tracking added to backlog |
 
 ### Next Actions
