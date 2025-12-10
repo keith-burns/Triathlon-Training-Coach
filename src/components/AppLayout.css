@@ -1,0 +1,15 @@
+/* ===================================================
+   APP LAYOUT STYLES
+   =================================================== */
+
+.app-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--neutral-50);
+}
+
+.app-main {
+    flex: 1;
+    overflow-y: auto;
+}

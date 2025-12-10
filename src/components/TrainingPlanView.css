@@ -1,0 +1,511 @@
+/* ===================================================
+   TRAINING PLAN VIEW STYLES
+   =================================================== */
+
+.plan-view {
+    min-height: 100vh;
+    background: var(--neutral-50);
+}
+
+/* Header */
+.plan-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: var(--space-4) var(--space-6);
+    background: white;
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    color: var(--neutral-600);
+    font-weight: 500;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+}
+
+.back-button:hover {
+    color: var(--primary-600);
+    background: var(--primary-50);
+}
+
+.plan-header-content {
+    max-width: 1200px;
+    margin: var(--space-4) auto 0;
+}
+
+.plan-title {
+    font-size: 1.75rem;
+    margin-bottom: var(--space-2);
+}
+
+.plan-meta {
+    color: var(--neutral-500);
+    font-size: 0.95rem;
+}
+
+/* Phase Overview */
+.phase-overview {
+    padding: var(--space-6);
+    background: white;
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+.phase-bar {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.phase-segment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.75rem;
+    min-width: 60px;
+}
+
+.phase-name {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.phase-weeks {
+    opacity: 0.8;
+}
+
+/* Week Selector */
+.week-selector {
+    padding: var(--space-6);
+    background: white;
+    border-bottom: 1px solid var(--neutral-200);
+    text-align: center;
+}
+
+.week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-6);
+    margin-bottom: var(--space-4);
+}
+
+.week-nav-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--neutral-600);
+    background: var(--neutral-100);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+}
+
+.week-nav-btn:hover:not(:disabled) {
+    color: var(--primary-600);
+    background: var(--primary-100);
+}
+
+.week-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.week-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.week-number {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--neutral-800);
+}
+
+.week-phase {
+    padding: var(--space-1) var(--space-3);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+}
+
+.week-focus {
+    color: var(--neutral-600);
+    font-size: 0.95rem;
+    margin-bottom: var(--space-2);
+}
+
+.week-hours {
+    color: var(--neutral-500);
+    font-size: 0.9rem;
+}
+
+/* Week Thumbnails */
+.week-thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-6);
+    background: white;
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+.week-thumb {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--neutral-600);
+    background: var(--neutral-100);
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.week-thumb:hover {
+    background: var(--neutral-200);
+}
+
+.week-thumb.active {
+    font-weight: 700;
+    color: var(--neutral-900);
+}
+
+/* Days Grid */
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-4);
+    padding: var(--space-6);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.day-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--neutral-200);
+    overflow: hidden;
+}
+
+.day-card.rest-day {
+    background: linear-gradient(135deg, var(--neutral-50), var(--success));
+    background-size: 200% 200%;
+    background-position: 0% 100%;
+}
+
+.day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4);
+    background: var(--neutral-50);
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+.day-name {
+    font-weight: 700;
+    color: var(--neutral-800);
+}
+
+.day-date {
+    color: var(--neutral-500);
+    font-size: 0.9rem;
+}
+
+.day-workouts {
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+/* Workout Cards */
+.workout-card {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--neutral-200);
+    overflow: hidden;
+}
+
+.workout-summary {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: white;
+    text-align: left;
+    transition: background var(--transition-fast);
+}
+
+.workout-summary:hover {
+    background: var(--neutral-50);
+}
+
+.workout-icon {
+    font-size: 1.5rem;
+}
+
+.workout-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.workout-title {
+    font-weight: 600;
+    color: var(--neutral-800);
+}
+
+.workout-duration {
+    font-size: 0.85rem;
+    color: var(--neutral-500);
+}
+
+.workout-expand {
+    color: var(--neutral-400);
+    font-size: 0.75rem;
+    transition: transform var(--transition-fast);
+}
+
+.workout-expand.expanded {
+    transform: rotate(180deg);
+}
+
+/* Workout Details */
+.workout-details {
+    padding: var(--space-4);
+    background: var(--neutral-50);
+    border-top: 1px solid var(--neutral-200);
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.workout-description {
+    color: var(--neutral-600);
+    font-size: 0.95rem;
+    margin-bottom: var(--space-4);
+}
+
+.workout-steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.step-card {
+    padding: var(--space-4);
+    background: white;
+    border-radius: var(--radius-lg);
+    border-left: 4px solid var(--neutral-300);
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+}
+
+.step-intensity {
+    padding: var(--space-1) var(--space-2);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+}
+
+.step-duration {
+    color: var(--neutral-500);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.step-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+}
+
+.step-instructions {
+    color: var(--neutral-600);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.step-targets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+}
+
+.target-badge {
+    padding: var(--space-1) var(--space-2);
+    background: var(--neutral-100);
+    color: var(--neutral-700);
+    font-size: 0.8rem;
+    border-radius: var(--radius-md);
+}
+
+/* Workout Tips */
+.workout-tips {
+    margin-top: var(--space-4);
+    padding: var(--space-4);
+    background: var(--primary-50);
+    border-radius: var(--radius-lg);
+}
+
+.workout-tips h5 {
+    font-size: 0.9rem;
+    margin-bottom: var(--space-2);
+}
+
+.workout-tips ul {
+    list-style: none;
+    padding: 0;
+}
+
+.workout-tips li {
+    position: relative;
+    padding-left: var(--space-5);
+    color: var(--neutral-600);
+    font-size: 0.85rem;
+    margin-bottom: var(--space-1);
+}
+
+.workout-tips li::before {
+    content: '•';
+    position: absolute;
+    left: var(--space-2);
+    color: var(--primary-500);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .days-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .phase-segment {
+        min-width: 40px;
+        font-size: 0.65rem;
+    }
+
+    .week-thumbnails {
+        max-width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+    }
+}
+
+/* Workout Actions */
+.workout-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background: var(--primary-50);
+    color: var(--primary-600);
+    border: 1px solid var(--primary-200);
+}
+
+.edit-btn:hover {
+    background: var(--primary-100);
+    border-color: var(--primary-300);
+}
+
+.swap-btn {
+    background: var(--accent-50);
+    color: var(--accent-600);
+    border: 1px solid var(--accent-200);
+}
+
+.swap-btn:hover {
+    background: var(--accent-100);
+    border-color: var(--accent-300);
+}
+
+/* Save button in header */
+.save-btn {
+    margin-top: var(--space-3);
+}
+
+/* Completion Indicator */
+.completion-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    color: white;
+    font-weight: bold;
+    margin-left: calc(-1 * var(--space-2));
+    margin-right: var(--space-1);
+}
+
+/* Log Button */
+.log-btn {
+    background: var(--success);
+    color: white;
+    border: none;
+}
+
+.log-btn:hover {
+    background: #059669;
+}
+
+.log-btn.completed {
+    background: var(--primary-100);
+    color: var(--primary-700);
+    border: 1px solid var(--primary-300);
+}

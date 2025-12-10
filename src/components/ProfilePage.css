@@ -1,0 +1,549 @@
+/* ===================================================
+   PROFILE PAGE STYLES
+   =================================================== */
+
+.profile-page {
+    padding: var(--space-6);
+    background: var(--neutral-50);
+    min-height: 100%;
+}
+
+.profile-section {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-md);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.section-actions {
+    display: flex;
+    gap: var(--space-3);
+}
+
+/* Empty State */
+.empty-profile {
+    text-align: center;
+    padding: var(--space-8);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: var(--space-4);
+    opacity: 0.5;
+}
+
+.empty-profile h2 {
+    margin-bottom: var(--space-2);
+}
+
+.empty-profile p {
+    color: var(--neutral-600);
+    margin-bottom: var(--space-6);
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: var(--space-6);
+}
+
+.form-group>label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--space-3);
+    color: var(--neutral-700);
+}
+
+/* Experience Options */
+.experience-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+}
+
+.experience-btn {
+    padding: var(--space-3) var(--space-4);
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    background: white;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: 0.9rem;
+}
+
+.experience-btn:hover {
+    border-color: var(--primary-300);
+}
+
+.experience-btn.active {
+    border-color: var(--primary-500);
+    background: var(--primary-50);
+    color: var(--primary-700);
+}
+
+/* Metrics Grid */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+}
+
+.metric-input {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.metric-label {
+    font-size: 0.85rem;
+    color: var(--neutral-600);
+}
+
+.metric-input input {
+    padding: var(--space-3);
+    border: 1px solid var(--neutral-300);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+}
+
+.metric-unit {
+    font-size: 0.8rem;
+    color: var(--neutral-500);
+}
+
+/* Rest Days */
+.rest-days-grid {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.day-btn {
+    padding: var(--space-2) var(--space-3);
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--radius-md);
+    background: white;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: 0.85rem;
+}
+
+.day-btn:hover {
+    border-color: var(--primary-300);
+}
+
+.day-btn.active {
+    border-color: var(--primary-500);
+    background: var(--primary-500);
+    color: white;
+}
+
+/* Split Sliders */
+.split-sliders {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.split-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.split-row span {
+    min-width: 120px;
+    font-size: 0.9rem;
+}
+
+.split-row input[type="range"] {
+    flex: 1;
+}
+
+/* HR Inputs */
+.hr-inputs {
+    display: flex;
+    gap: var(--space-4);
+}
+
+/* Profile Cards (View Mode) */
+.profile-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+}
+
+.profile-card {
+    padding: var(--space-4);
+    background: var(--neutral-50);
+    border-radius: var(--radius-lg);
+}
+
+.profile-card.wide {
+    grid-column: 1 / -1;
+}
+
+.profile-card h3 {
+    font-size: 0.9rem;
+    color: var(--neutral-500);
+    margin-bottom: var(--space-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.profile-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--neutral-800);
+}
+
+.no-data {
+    color: var(--neutral-400);
+    font-style: italic;
+}
+
+/* Metrics Display */
+.metrics-display {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.metric-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.metric-icon {
+    font-size: 1.1rem;
+}
+
+/* Rest Days Display */
+.rest-days-display {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.day-tag {
+    padding: var(--space-1) var(--space-3);
+    background: var(--primary-100);
+    color: var(--primary-700);
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Split Display */
+.split-display {
+    margin-top: var(--space-2);
+}
+
+.split-bar {
+    display: flex;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    height: 36px;
+}
+
+.split-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+}
+
+.split-segment.swim {
+    background: var(--swim-color);
+}
+
+.split-segment.bike {
+    background: var(--bike-color);
+}
+
+.split-segment.run {
+    background: var(--run-color);
+}
+
+/* HR Zones Display */
+.hr-zones-display {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.hr-zone-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    background: white;
+    border-radius: var(--radius-md);
+    min-width: 80px;
+}
+
+.zone-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--neutral-500);
+}
+
+.zone-range {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Injuries Display */
+.injuries-display {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.injury-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+}
+
+.injury-item.minor {
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+}
+
+.injury-item.moderate {
+    background: rgba(234, 179, 8, 0.1);
+    color: #ca8a04;
+}
+
+.injury-item.severe {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+/* Equipment Grid (Edit) */
+.equipment-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.equipment-btn {
+    padding: var(--space-2) var(--space-4);
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    background: white;
+    font-size: 0.9rem;
+    transition: all var(--transition-fast);
+}
+
+.equipment-btn:hover {
+    border-color: var(--primary-300);
+}
+
+.equipment-btn.active {
+    border-color: var(--primary-500);
+    background: var(--primary-100);
+    color: var(--primary-700);
+}
+
+/* Equipment Display (View) */
+.equipment-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.equipment-tag {
+    padding: var(--space-1) var(--space-3);
+    background: var(--primary-100);
+    color: var(--primary-700);
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+}
+
+/* Strength/Weakness */
+.strength-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+}
+
+.strength-select {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.strength-label {
+    font-size: 0.85rem;
+    color: var(--neutral-600);
+}
+
+.discipline-options {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.discipline-btn {
+    flex: 1;
+    padding: var(--space-2) var(--space-3);
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    background: white;
+    font-size: 0.85rem;
+    text-transform: capitalize;
+    transition: all var(--transition-fast);
+}
+
+.discipline-btn:hover {
+    border-color: var(--neutral-300);
+}
+
+.discipline-btn.active.strongest {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: var(--success);
+    color: #15803d;
+}
+
+.discipline-btn.active.weakest {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: var(--warning);
+    color: #b45309;
+}
+
+/* Assessment Display (View) */
+.assessment-display {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.assessment-item {
+    flex: 1;
+    padding: var(--space-3);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.assessment-item.strongest {
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.assessment-item.weakest {
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.assessment-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--neutral-500);
+    text-transform: uppercase;
+    margin-bottom: var(--space-1);
+}
+
+.assessment-value {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+/* Goal Options (Edit) */
+.goal-options {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.goal-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--radius-lg);
+    background: white;
+    transition: all var(--transition-fast);
+}
+
+.goal-btn:hover {
+    border-color: var(--primary-300);
+}
+
+.goal-btn.active {
+    border-color: var(--primary-500);
+    background: var(--primary-50);
+}
+
+.goal-btn .goal-icon {
+    font-size: 1.5rem;
+}
+
+.goal-btn .goal-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Goal Display (View) */
+.goal-display {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.goal-icon-large {
+    font-size: 2rem;
+}
+
+.goal-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .experience-options {
+        grid-template-columns: 1fr;
+    }
+
+    .rest-days-grid {
+        flex-wrap: wrap;
+    }
+
+    .strength-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .goal-options {
+        flex-direction: column;
+    }
+}
