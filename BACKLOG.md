@@ -11,18 +11,18 @@ This backlog tracks feature development for the Triathlon Training Coach applica
 
 Focused scope for initial production release:
 
-| Item | Feature | Hours | Purpose |
-|------|---------|-------|---------|
-| B-027 | Production Deployment | 4-8 | Get app online |
-| B-007 | Enhanced Preferences | 8-12 | Plans fit schedules |
-| B-019 | Mobile PWA | 10-14 | Works on phones |
-| B-028 | Metric/Imperial | 6-10 | Canadian users |
-| B-029 | Automated Tests | 4-6 | Catch regressions |
+| Item | Feature | Hours | Status |
+|------|---------|-------|--------|
+| B-027 | Production Deployment | 4-8 | ✅ Done |
+| B-007 | Enhanced Preferences | 8-12 | Not Started |
+| B-019 | Mobile PWA | 10-14 | Not Started |
+| B-028 | Metric/Imperial | 6-10 | Not Started |
+| B-029 | Automated Tests | 4-6 | 🔶 Partial |
 
-**Total: ~32-50 hours**
+**Total: ~32-50 hours** | **Progress: ~20% complete**
 
 ### Success Criteria
-- [ ] App deployed and accessible via URL
+- [x] App deployed and accessible via URL → https://triathlontrainingcoach.vercel.app/
 - [ ] 5+ friends/family actively testing
 - [ ] Core features work on mobile
 - [ ] No critical bugs reported
@@ -36,7 +36,7 @@ Focused scope for initial production release:
 | **Priority** | P1 - Critical |
 | **Value** | ⭐⭐⭐⭐⭐ Very High |
 | **Effort** | **8-12 hours** |
-| **Status** | Not Started |
+| **Status** | 🔶 Partial (Sprint 0.0 complete) |
 
 ### Description
 Set up backend infrastructure required for OAuth integrations, secure API key storage, and webhooks.
@@ -49,13 +49,13 @@ Set up backend infrastructure required for OAuth integrations, secure API key st
 ### Acceptance Criteria
 
 **Security & Auth:**
-- [ ] Move Supabase credentials to `.env` file (security fix)
-- [ ] Use `import.meta.env` for all environment variables
+- [x] Move Supabase credentials to `.env` file (security fix) ✅ Sprint 0.0
+- [x] Use `import.meta.env` for all environment variables ✅ Sprint 0.0
 - [ ] Secure token handling for OAuth (encrypted storage, auto-refresh)
 - [ ] Add "Forgot Password" UI flow (Supabase built-in)
 
 **Infrastructure:**
-- [ ] Install and configure `react-router-dom` for proper navigation
+- [x] Install and configure `react-router-dom` for proper navigation ✅ Sprint 0.0
 - [ ] Supabase Edge Functions or Express API setup
 - [ ] OAuth token storage (encrypted)
 - [ ] Webhook endpoints for activity notifications
@@ -885,7 +885,7 @@ Track equipment usage for maintenance reminders.
 | **Priority** | P2 - High |
 | **Value** | ⭐⭐⭐⭐⭐ Very High |
 | **Effort** | **4-8 hours** |
-| **Status** | Not Started |
+| **Status** | ✅ Done (2024-12-09) |
 
 ### Description
 Deploy the application to production so it can be shared with friends and family for real-world testing.
@@ -896,12 +896,12 @@ Deploy the application to production so it can be shared with friends and family
 - Accessible from any device
 
 ### Acceptance Criteria
-- [ ] Deploy to Vercel or Netlify
-- [ ] Configure environment variables
-- [ ] Set up custom domain (optional)
-- [ ] Enable basic error tracking (Sentry or similar)
-- [ ] Test all features in production
-- [ ] Invite initial testers
+- [x] Deploy to Vercel or Netlify → Deployed to https://triathlontrainingcoach.vercel.app/
+- [x] Configure environment variables → Supabase URL and key configured
+- [ ] Set up custom domain (optional) → Deferred, using Vercel subdomain
+- [ ] Enable basic error tracking (Sentry or similar) → Deferred to B-031
+- [x] Test all features in production → Auth, plan generation, navigation work
+- [x] Invite initial testers → Ready for friends/family testing
 
 ### Dependencies
 - None (can deploy current state)
@@ -946,7 +946,7 @@ Allow users to choose metric or imperial units for distances, paces, and measure
 | **Priority** | P2 - High |
 | **Value** | ⭐⭐⭐⭐ High |
 | **Effort** | **4-6 hours** |
-| **Status** | Not Started |
+| **Status** | 🔶 Partial (Vitest configured, initial tests added) |
 
 ### Description
 Add automated test coverage for critical paths to catch regressions as features are added.
@@ -957,7 +957,7 @@ Add automated test coverage for critical paths to catch regressions as features 
 - Enable safe refactoring
 
 ### Acceptance Criteria
-- [ ] Vitest or Jest configured
+- [x] Vitest or Jest configured ✅ Sprint 0.0
 - [ ] Tests for plan generation logic
 - [ ] Tests for HR zone calculation
 - [ ] Tests for date/time utilities
@@ -995,6 +995,36 @@ Allow users to delete their account and all associated data (GDPR-like complianc
 
 ### Dependencies
 - None (Supabase handles cascade delete with proper RLS)
+
+---
+
+## 🐛 B-031: Sentry Error Tracking
+
+| Field | Value |
+|-------|-------|
+| **Priority** | P3 - Medium |
+| **Value** | ⭐⭐⭐ Medium |
+| **Effort** | **2-4 hours** |
+| **Status** | Not Started |
+
+### Description
+Integrate Sentry for production error tracking and monitoring. Captures JavaScript errors, performance issues, and user context for debugging.
+
+### User Value
+- Faster bug identification and resolution
+- Proactive error detection before users report issues
+- Performance monitoring and insights
+
+### Acceptance Criteria
+- [ ] Sentry SDK installed and configured
+- [ ] Error boundary wraps app in production
+- [ ] Source maps uploaded for readable stack traces
+- [ ] User context attached to error reports (anonymized)
+- [ ] Performance monitoring enabled
+- [ ] Alerts configured for critical errors
+
+### Dependencies
+- B-027 (Production Deployment) - need production environment first
 
 ---
 

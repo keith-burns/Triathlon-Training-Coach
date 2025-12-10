@@ -14,8 +14,8 @@ This workflow provides the recommended order for developing features from BACKLO
 
 Focus on getting a deployable, testable app to real users before building complex features.
 
-### 0.0 Critical Infrastructure Prerequisites
-**Estimate: 2-4 hours**
+### 0.0 Critical Infrastructure Prerequisites ✅ COMPLETE
+**Estimate: 2-4 hours** | **Completed: Dec 9, 2024**
 
 | Dependency | Rationale |
 |------------|-----------|
@@ -28,8 +28,8 @@ Focus on getting a deployable, testable app to real users before building comple
 
 ---
 
-### 0.1 Production Deployment (B-027)
-**Estimate: 4-8 hours**
+### 0.1 Production Deployment (B-027) ✅ COMPLETE
+**Estimate: 4-8 hours** | **Completed: Dec 9, 2024** | **URL:** https://triathlontrainingcoach.vercel.app/
 
 | Dependency | Rationale |
 |------------|-----------|
@@ -37,15 +37,17 @@ Focus on getting a deployable, testable app to real users before building comple
 
 **Tasks:**
 1. Deploy to Vercel (works well with Vite)
-2. Configure environment variables
-3. Enable basic error tracking (Sentry)
+2. Configure environment variables (Supabase URL/key)
+3. Configure Supabase redirect URLs for production
 4. Test all features in production
 5. Invite friends/family to test
 
+**Follow-up:** Add Sentry error tracking (B-031) after initial deployment is stable.
+
 ---
 
-### 0.2 Automated Testing (B-029)
-**Estimate: 4-6 hours**
+### 0.2 Automated Testing (B-029) 🔶 PARTIAL
+**Estimate: 4-6 hours** | **Vitest configured, initial tests added**
 
 | Dependency | Rationale |
 |------------|-----------|
