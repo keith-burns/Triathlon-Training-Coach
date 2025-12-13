@@ -16,6 +16,13 @@ import type {
 
 import type { AthleteProfile, DisciplineSplit, StrengthWeakness, DayOfWeek } from '../types/athlete';
 import { adjustRestDays } from './trainingPlanLogic';
+import {
+    parseLocalDate,
+    formatLocalDate,
+    getDayOfWeek,
+    addDays,
+    getWeeksBetween
+} from './dateUtils';
 
 // ============================================
 // Helper Functions
@@ -23,30 +30,6 @@ import { adjustRestDays } from './trainingPlanLogic';
 
 function generateId(): string {
     return Math.random().toString(36).substring(2, 15);
-}
-
-function addDays(date: Date, days: number): Date {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-}
-
-function formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
-function getDayOfWeek(date: Date): string {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    return days[date.getDay()];
-}
-
-function getWeeksBetween(start: Date, end: Date): number {
-    const diffTime = end.getTime() - start.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return Math.max(1, Math.floor(diffDays / 7));
 }
 
 // ============================================
@@ -821,7 +804,7 @@ function generateWeekWorkouts(
         const isRest = dayPlan.workouts.length === 1 && dayPlan.workouts[0].discipline === 'rest';
 
         days.push({
-            date: formatDate(dayDate),
+            date: formatLocalDate(dayDate),
             dayOfWeek: getDayOfWeek(dayDate),
             workouts: dayPlan.workouts,
             isRestDay: isRest,
@@ -837,7 +820,7 @@ function generateWeekWorkouts(
 
 export function generateTrainingPlan(config: RaceConfig, profile?: AthleteProfile): TrainingPlan {
     const today = new Date();
-    const raceDate = new Date(config.raceDate);
+    const raceDate = parseLocalDate(config.raceDate);
     const totalWeeks = getWeeksBetween(today, raceDate);
 
     const phases = getPhaseDistribution(totalWeeks);

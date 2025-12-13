@@ -114,18 +114,24 @@ describe('Training Plan Logic', () => {
     });
 
     describe('mergeGenericPlans', () => {
-        it('should preserve past days from old plan', () => {
-            const pastDate = '2000-01-01'; // Definitely past
-            const futureDate = '2099-01-01'; // Definitely future
+        it('should preserve entire logged workouts while using new day structure', () => {
+            const testDate = '2025-01-15';
 
             const oldPlan: TrainingPlan = {
                 id: 'old',
                 weeks: [{
                     weekNumber: 1,
-                    days: [
-                        { date: pastDate, workouts: [{ id: 'old_workout', completion: { status: 'completed' } }] } as any,
-                        { date: futureDate, workouts: [{ id: 'old_future' }] } as any
-                    ]
+                    days: [{
+                        date: testDate,
+                        dayOfWeek: 'WrongDay',  // Old incorrect dayOfWeek
+                        workouts: [{
+                            id: 'old_swim',
+                            discipline: 'swim',
+                            title: 'Old Swim Title',
+                            completion: { status: 'completed', notes: 'Great swim!' }
+                        }],
+                        isRestDay: false
+                    } as any]
                 } as any]
             } as any;
 
@@ -133,23 +139,161 @@ describe('Training Plan Logic', () => {
                 id: 'new',
                 weeks: [{
                     weekNumber: 1,
-                    days: [
-                        { date: pastDate, workouts: [{ id: 'new_workout' }] } as any,
-                        { date: futureDate, workouts: [{ id: 'new_future' }] } as any
-                    ]
+                    days: [{
+                        date: testDate,
+                        dayOfWeek: 'Wednesday',  // Correct dayOfWeek
+                        workouts: [{
+                            id: 'new_swim',
+                            discipline: 'swim',
+                            title: 'New Swim Title'
+                        }],
+                        isRestDay: false
+                    } as any]
                 } as any]
             } as any;
 
             const merged = mergeGenericPlans(oldPlan, newPlan);
 
-            const mergedPastDay = merged.weeks[0].days.find(d => d.date === pastDate);
-            const mergedFutureDay = merged.weeks[0].days.find(d => d.date === futureDate);
+            const mergedDay = merged.weeks[0].days.find(d => d.date === testDate);
 
-            // Should preserve old past workout (completed)
-            expect(mergedPastDay?.workouts[0].id).toBe('old_workout');
+            // Should use NEW dayOfWeek (fixed timezone)
+            expect(mergedDay?.dayOfWeek).toBe('Wednesday');
+            // Should preserve OLD workout entirely (since it was logged)
+            expect(mergedDay?.workouts[0].id).toBe('old_swim');
+            expect(mergedDay?.workouts[0].title).toBe('Old Swim Title');
+            expect(mergedDay?.workouts[0].completion?.status).toBe('completed');
+        });
 
-            // Should use new future workout
-            expect(mergedFutureDay?.workouts[0].id).toBe('new_future');
+        it('should use new workouts for days without logged data', () => {
+            const testDate = '2099-01-15';
+
+            const oldPlan: TrainingPlan = {
+                id: 'old',
+                weeks: [{
+                    weekNumber: 1,
+                    days: [{
+                        date: testDate,
+                        dayOfWeek: 'OldDay',
+                        workouts: [{
+                            id: 'old_bike',
+                            discipline: 'bike'
+                            // No completion - not logged
+                        }],
+                        isRestDay: false
+                    } as any]
+                } as any]
+            } as any;
+
+            const newPlan: TrainingPlan = {
+                id: 'new',
+                weeks: [{
+                    weekNumber: 1,
+                    days: [{
+                        date: testDate,
+                        dayOfWeek: 'NewDay',
+                        workouts: [{
+                            id: 'new_bike',
+                            discipline: 'bike',
+                            title: 'New Bike Workout'
+                        }],
+                        isRestDay: false
+                    } as any]
+                } as any]
+            } as any;
+
+            const merged = mergeGenericPlans(oldPlan, newPlan);
+
+            const mergedDay = merged.weeks[0].days.find(d => d.date === testDate);
+
+            // Should use new workout (old was not logged)
+            expect(mergedDay?.workouts[0].id).toBe('new_bike');
+            // dayOfWeek is now recalculated from date (2099-01-15 is a Thursday)
+            expect(mergedDay?.dayOfWeek).toBe('Thursday');
+        });
+
+        it('should preserve logged rest days', () => {
+            const testDate = '2025-01-13'; // A Monday
+
+            const oldPlan: TrainingPlan = {
+                id: 'old',
+                weeks: [{
+                    weekNumber: 1,
+                    days: [{
+                        date: testDate,
+                        dayOfWeek: 'Monday',
+                        isRestDay: true,
+                        workouts: [{
+                            id: 'rest_workout',
+                            discipline: 'rest',
+                            title: 'Rest Day',
+                            totalDuration: 0,
+                            completion: { status: 'completed', actualDuration: 0 } // Logged rest day
+                        } as any]
+                    } as any]
+                } as any]
+            } as any;
+
+            const newPlan: TrainingPlan = {
+                id: 'new',
+                weeks: [{
+                    weekNumber: 1,
+                    days: [{
+                        date: testDate,
+                        dayOfWeek: 'Monday',
+                        isRestDay: false,
+                        workouts: [{
+                            id: 'new_swim',
+                            discipline: 'swim',
+                            title: 'New Swim Workout',
+                            totalDuration: 60
+                        } as any]
+                    } as any]
+                } as any]
+            } as any;
+
+            const merged = mergeGenericPlans(oldPlan, newPlan);
+            const mergedDay = merged.weeks[0].days.find(d => d.date === testDate);
+
+            // Should preserve logged rest day, not replace with swim
+            expect(mergedDay?.isRestDay).toBe(true);
+            expect(mergedDay?.workouts[0].discipline).toBe('rest');
+        });
+
+        it('should always recalculate dayOfWeek from date', () => {
+            // Simulates loading a plan from Supabase with incorrect dayOfWeek
+            const testDate = '2025-12-13'; // Saturday
+
+            const oldPlan: TrainingPlan = {
+                id: 'old',
+                weeks: [{
+                    weekNumber: 1,
+                    days: [{
+                        date: testDate,
+                        dayOfWeek: 'Sunday', // WRONG! Dec 13, 2025 is Saturday
+                        isRestDay: false,
+                        workouts: []
+                    } as any]
+                } as any]
+            } as any;
+
+            const newPlan: TrainingPlan = {
+                id: 'new',
+                weeks: [{
+                    weekNumber: 1,
+                    days: [{
+                        date: testDate,
+                        dayOfWeek: 'Sunday', // Also wrong in new plan
+                        isRestDay: false,
+                        workouts: [{ id: 'new', discipline: 'swim', totalDuration: 60 } as any]
+                    } as any]
+                } as any]
+            } as any;
+
+            const merged = mergeGenericPlans(oldPlan, newPlan);
+            const mergedDay = merged.weeks[0].days.find(d => d.date === testDate);
+
+            // dayOfWeek should be corrected to Saturday
+            expect(mergedDay?.dayOfWeek).toBe('Saturday');
         });
     });
 });

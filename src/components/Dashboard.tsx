@@ -3,8 +3,9 @@
  * Main view for logged-in users showing today's workout and progress
  */
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { TrainingPlan, Workout } from '../types/race';
+import { getLocalToday, parseLocalDate } from '../utils/dateUtils';
 import './Dashboard.css';
 
 interface DashboardProps {
@@ -13,16 +14,13 @@ interface DashboardProps {
 }
 
 export function Dashboard({ plan, userName }: DashboardProps) {
+    const [expandedWorkout, setExpandedWorkout] = useState<number | null>(null);
+
     // Calculate today's date and find today's workouts
-    const today = useMemo(() => {
-        const now = new Date();
-        return now.toISOString().split('T')[0];
-    }, []);
+    const today = useMemo(() => getLocalToday(), []);
 
     const { todayWorkouts, currentWeek, daysUntilRace, completedWeeks, totalWeeks, weekProgress } = useMemo(() => {
-        // Parse date string as local date to avoid timezone issues
-        const [year, month, day] = plan.raceConfig.raceDate.split('-').map(Number);
-        const raceDate = new Date(year, month - 1, day);
+        const raceDate = parseLocalDate(plan.raceConfig.raceDate);
         const now = new Date();
         now.setHours(0, 0, 0, 0); // Normalize to start of day
         const daysUntil = Math.ceil((raceDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
@@ -73,6 +71,19 @@ export function Dashboard({ plan, userName }: DashboardProps) {
         }
     };
 
+    const getIntensityColor = (intensity: string): string => {
+        switch (intensity) {
+            case 'recovery': return 'var(--neutral-400)';
+            case 'easy': return 'var(--success)';
+            case 'moderate': return 'var(--primary-500)';
+            case 'tempo': return 'var(--accent-500)';
+            case 'threshold': return 'var(--warning)';
+            case 'intervals': return 'var(--error)';
+            case 'race': return 'var(--bike-color)';
+            default: return 'var(--neutral-500)';
+        }
+    };
+
     const formatDuration = (mins: number): string => {
         if (mins >= 60) {
             const hours = Math.floor(mins / 60);
@@ -80,6 +91,10 @@ export function Dashboard({ plan, userName }: DashboardProps) {
             return remaining > 0 ? `${hours}h ${remaining}m` : `${hours}h`;
         }
         return `${mins}m`;
+    };
+
+    const toggleWorkout = (idx: number) => {
+        setExpandedWorkout(expandedWorkout === idx ? null : idx);
     };
 
     const totalTodayMinutes = todayWorkouts.reduce((sum, w) => sum + w.totalDuration, 0);
@@ -134,29 +149,92 @@ export function Dashboard({ plan, userName }: DashboardProps) {
                 ) : (
                     <div className="today-workouts">
                         {todayWorkouts.map((workout, idx) => (
-                            <div key={idx} className={`workout-card-large ${workout.discipline}`}>
-                                <div className="workout-card-header">
+                            <div key={idx} className={`workout-card-large ${workout.discipline} ${expandedWorkout === idx ? 'expanded' : ''}`}>
+                                <button
+                                    className="workout-card-header"
+                                    onClick={() => toggleWorkout(idx)}
+                                    aria-expanded={expandedWorkout === idx}
+                                >
                                     <span className="workout-type-icon">{getWorkoutIcon(workout.discipline)}</span>
                                     <div className="workout-card-info">
                                         <h3>{workout.title}</h3>
                                         <span className="workout-duration">{formatDuration(workout.totalDuration)}</span>
                                     </div>
-                                </div>
-                                <p className="workout-description">{workout.description}</p>
-                                {workout.steps && workout.steps.length > 0 && (
-                                    <div className="workout-preview">
-                                        <strong>Workout Structure:</strong>
-                                        <ul>
-                                            {workout.steps.slice(0, 3).map((step, stepIdx) => (
-                                                <li key={stepIdx}>
-                                                    {step.name} - {step.duration}
-                                                </li>
-                                            ))}
-                                            {workout.steps.length > 3 && (
-                                                <li className="more-steps">+ {workout.steps.length - 3} more steps</li>
-                                            )}
-                                        </ul>
+                                    <span className={`workout-expand-icon ${expandedWorkout === idx ? 'expanded' : ''}`}>
+                                        ▼
+                                    </span>
+                                </button>
+
+                                {expandedWorkout === idx ? (
+                                    <div className="workout-details">
+                                        <p className="workout-description">{workout.description}</p>
+
+                                        {workout.steps && workout.steps.length > 0 && (
+                                            <div className="workout-steps">
+                                                <h4>Workout Structure</h4>
+                                                {workout.steps.map((step, stepIdx) => (
+                                                    <div key={stepIdx} className="workout-step">
+                                                        <div className="step-header">
+                                                            <span
+                                                                className="step-intensity"
+                                                                style={{ backgroundColor: getIntensityColor(step.intensity) }}
+                                                            >
+                                                                {step.intensity}
+                                                            </span>
+                                                            <span className="step-duration">{step.duration}</span>
+                                                        </div>
+                                                        <div className="step-content">
+                                                            <strong>{step.name}</strong>
+                                                            <p>{step.instructions}</p>
+                                                            {(step.targetHeartRateZone || step.targetPace || step.cadence) && (
+                                                                <div className="step-targets">
+                                                                    {step.targetHeartRateZone && (
+                                                                        <span className="target-badge">❤️ Zone {step.targetHeartRateZone}</span>
+                                                                    )}
+                                                                    {step.targetPace && (
+                                                                        <span className="target-badge">⏱️ {step.targetPace}</span>
+                                                                    )}
+                                                                    {step.cadence && (
+                                                                        <span className="target-badge">🔄 {step.cadence}</span>
+                                                                    )}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {workout.tips && workout.tips.length > 0 && (
+                                            <div className="workout-tips">
+                                                <h4>💡 Tips</h4>
+                                                <ul>
+                                                    {workout.tips.map((tip, i) => (
+                                                        <li key={i}>{tip}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
                                     </div>
+                                ) : (
+                                    <>
+                                        <p className="workout-description">{workout.description}</p>
+                                        {workout.steps && workout.steps.length > 0 && (
+                                            <div className="workout-preview">
+                                                <strong>Workout Structure:</strong>
+                                                <ul>
+                                                    {workout.steps.slice(0, 3).map((step, stepIdx) => (
+                                                        <li key={stepIdx}>
+                                                            {step.name} - {step.duration}
+                                                        </li>
+                                                    ))}
+                                                    {workout.steps.length > 3 && (
+                                                        <li className="more-steps">+ {workout.steps.length - 3} more steps</li>
+                                                    )}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         ))}
@@ -210,3 +288,4 @@ export function Dashboard({ plan, userName }: DashboardProps) {
         </div>
     );
 }
+

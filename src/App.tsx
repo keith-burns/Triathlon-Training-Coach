@@ -262,10 +262,12 @@ function App() {
                 currentConfig={trainingPlan.raceConfig}
                 onSave={(newConfig) => {
                   const newPlan = generateTrainingPlan(newConfig, profile || undefined);
-                  setTrainingPlan(newPlan);
+                  // Merge with old plan to preserve logged workout history
+                  const mergedPlan = mergeGenericPlans(trainingPlan, newPlan);
+                  setTrainingPlan(mergedPlan);
                   setSaveStatus('idle');
                   // Auto-save for logged-in users
-                  savePlan(newPlan).then(({ id, error }) => {
+                  savePlan(mergedPlan).then(({ id, error }) => {
                     if (!error && id) {
                       setSavedPlanId(id);
                       setSaveStatus('saved');
@@ -281,14 +283,6 @@ function App() {
                 profile={profile}
                 onSave={async (profileData) => {
                   await saveProfile(profileData);
-                }}
-                onPlanRegenerate={() => {
-                  if (trainingPlan) {
-                    const updatedPlan = generateTrainingPlan(trainingPlan.raceConfig, profile || undefined);
-                    const mergedPlan = mergeGenericPlans(trainingPlan, updatedPlan);
-                    setTrainingPlan(mergedPlan);
-                    setSaveStatus('idle');
-                  }
                 }}
               />
             } />

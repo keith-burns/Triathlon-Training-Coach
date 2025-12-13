@@ -19,7 +19,6 @@ import './ProfilePage.css';
 interface ProfilePageProps {
     profile: AthleteProfile | null;
     onSave: (profile: Partial<AthleteProfile>) => Promise<void>;
-    onPlanRegenerate: () => void;
 }
 
 const EXPERIENCE_LABELS: Record<ExperienceLevel, string> = {
@@ -39,7 +38,7 @@ const DAY_LABELS: Record<DayOfWeek, string> = {
     sunday: 'Sun',
 };
 
-export function ProfilePage({ profile, onSave, onPlanRegenerate }: ProfilePageProps) {
+export function ProfilePage({ profile, onSave }: ProfilePageProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -90,7 +89,6 @@ export function ProfilePage({ profile, onSave, onPlanRegenerate }: ProfilePagePr
                 strengthWeakness,
             });
             setIsEditing(false);
-            onPlanRegenerate();
         } finally {
             setIsSaving(false);
         }
@@ -161,7 +159,7 @@ export function ProfilePage({ profile, onSave, onPlanRegenerate }: ProfilePagePr
                                 onClick={handleSave}
                                 disabled={isSaving}
                             >
-                                {isSaving ? 'Saving...' : 'Save & Update Plan'}
+                                {isSaving ? 'Saving...' : 'Save Profile'}
                             </button>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { TrainingPlan, Workout, Discipline, WorkoutCompletion } from '../types/race';
 import { recalculateWeekSummary } from '../utils/trainingPlanLogic';
+import { formatDisplayDate } from '../utils/dateUtils';
 import { WorkoutEditModal } from './WorkoutEditModal';
 import { WorkoutSwapModal } from './WorkoutSwapModal';
 import { WorkoutCompletionModal } from './WorkoutCompletionModal';
@@ -48,6 +49,7 @@ export function TrainingPlanView({
     const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
     const [editingWorkout, setEditingWorkout] = useState<EditingWorkout | null>(null);
     const [swappingWorkout, setSwappingWorkout] = useState<SwappingWorkout | null>(null);
+    const [showRegenConfirm, setShowRegenConfirm] = useState(false);
     const [completingWorkout, setCompletingWorkout] = useState<{
         workout: Workout;
         weekIndex: number;
@@ -90,11 +92,6 @@ export function TrainingPlanView({
             case 'race': return 'var(--bike-color)';
             default: return 'var(--neutral-500)';
         }
-    };
-
-    const formatDate = (dateStr: string): string => {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     };
 
     const toggleWorkout = (workoutId: string) => {
@@ -239,13 +236,9 @@ export function TrainingPlanView({
                     {onRegenerate && (
                         <button
                             className="btn btn-outline"
-                            onClick={() => {
-                                if (window.confirm('Are you sure? This will regenerate your entire plan and overwrite any custom edits.')) {
-                                    onRegenerate();
-                                }
-                            }}
+                            onClick={() => setShowRegenConfirm(true)}
                         >
-                            🔄 Regenerate
+                            🔄 Regenerate Plan
                         </button>
                     )}
                     <button
@@ -334,7 +327,7 @@ export function TrainingPlanView({
                     >
                         <div className="day-header">
                             <span className="day-name">{day.dayOfWeek}</span>
-                            <span className="day-date">{formatDate(day.date)}</span>
+                            <span className="day-date">{formatDisplayDate(day.date)}</span>
                         </div>
 
                         <div className="day-workouts">
@@ -396,7 +389,7 @@ export function TrainingPlanView({
                                                             🔄 Swap
                                                         </button>
                                                     )}
-                                                    {workout.discipline !== 'rest' && (
+                                                    {workout.discipline !== 'rest' && day.date <= new Date().toISOString().split('T')[0] && (
                                                         <button
                                                             className={`action-btn log-btn ${workout.completion?.status === 'completed' ? 'completed' : ''}`}
                                                             onClick={() => setCompletingWorkout({
@@ -491,6 +484,44 @@ export function TrainingPlanView({
                     onSave={handleCompletionSave}
                     onClose={() => setCompletingWorkout(null)}
                 />
+            )}
+
+            {/* Regenerate Confirmation Modal */}
+            {showRegenConfirm && (
+                <div className="modal-overlay" onClick={() => setShowRegenConfirm(false)}>
+                    <div className="modal-content regen-modal" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>🔄 Regenerate Training Plan?</h2>
+                            <button className="modal-close" onClick={() => setShowRegenConfirm(false)}>×</button>
+                        </div>
+                        <div className="modal-body">
+                            <p><strong>This will update all future workouts.</strong></p>
+                            <p className="warning-text">
+                                Any custom modifications to future workouts will be replaced with newly generated workouts.
+                            </p>
+                            <p className="success-text">
+                                <span className="success-icon">✓</span> Logged workouts will be preserved.
+                            </p>
+                        </div>
+                        <div className="modal-actions">
+                            <button
+                                className="btn btn-outline"
+                                onClick={() => setShowRegenConfirm(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => {
+                                    setShowRegenConfirm(false);
+                                    onRegenerate?.();
+                                }}
+                            >
+                                Regenerate Plan
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
