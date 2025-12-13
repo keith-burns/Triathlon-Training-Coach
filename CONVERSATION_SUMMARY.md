@@ -239,12 +239,72 @@ ADD COLUMN IF NOT EXISTS lactate_threshold_hr INTEGER;
 
 ---
 
-## Next Actions
+## Session 3: Sprint 0.0 & 0.1 - Infrastructure & Deployment (Dec 9, 2024)
 
-1. **Apply for Garmin Developer access** (reminder set for Dec 10)
-2. **Start B-000**: Move credentials to `.env`, add react-router
-3. **Deploy to production** (B-027) for real-world testing
-4. **Build v1.0 milestone** features
+### Sprint 0.0: Critical Infrastructure Prerequisites ✅
+
+**What Was Built:**
+
+1. **Environment Variables (Security Fix):**
+   - Created `.env` file with Supabase credentials
+   - Created `.env.example` template
+   - Added `.env` to `.gitignore`
+   - Refactored `supabase.ts` to use `import.meta.env` with validation
+
+2. **React Router Navigation:**
+   - Installed `react-router-dom` v7
+   - Updated `main.tsx` with `BrowserRouter`
+   - Converted `AppHeader.tsx` to use `<Link>` components
+   - Updated `App.tsx` to use `<Routes>/<Route>` components
+   - Removed obsolete `currentView` state
+
+3. **Automated Testing:**
+   - Installed Vitest, @testing-library/react, jsdom
+   - Configured `vite.config.ts` for testing
+   - Added 3 unit tests for supabase.ts
+   - Added `npm test`, `npm run test:watch`, `npm run test:coverage` scripts
+
+4. **Workout Library Enhancement:**
+   - Added `intensity: Intensity` field to `LibraryWorkout` interface
+   - Added intensity values to all 29 workouts
+   - Added `getWorkoutsByIntensity()` and `classifyIntensity()` helper functions
+
+### Sprint 0.1: Production Deployment ✅
+
+**Deployed to:** https://triathlontrainingcoach.vercel.app/
+
+**What Was Done:**
+- Deployed to Vercel (works with Vite)
+- Configured environment variables in Vercel dashboard
+- Configured Supabase redirect URLs for production
+- Tested auth, plan generation, navigation in production
+
+### Project Rules Established
+
+Added rules 16-20 to `.agent/workflows/project-rules.md`:
+- Rule 16: Feature Completion Workflow (update docs, run tests, recommend new tests)
+- Rule 17: Build Verification
+- Rule 18: Mobile Testing
+- Rule 19: Conventional Commits
+- Rule 20: Console Cleanliness
+
+### Backlog Updates
+
+| Item | Status | Notes |
+|------|--------|-------|
+| B-027 | ✅ Done | Deployed to Vercel |
+| B-029 | ✅ Done | 41 tests, GitHub Actions CI |
+| B-031 | New | Sentry Error Tracking added to backlog |
+| B-032 | New | Privacy Policy (Blocker for API access) |
+
+### Next Actions
+
+1. **Continue v1.0 Milestone:**
+   - B-007: Enhanced Training Preferences (8-12 hrs)
+   - B-019: Mobile PWA Optimization (10-14 hrs)
+   - B-028: Metric/Imperial Units (6-10 hrs)
+2. **B-031:** Add Sentry error tracking (post-MVP)
+3. **Invite testers** to https://triathlontrainingcoach.vercel.app/
 
 ---
 
@@ -270,3 +330,29 @@ All estimates assume AI-assisted development with Claude Opus 4.5 + Antigravity 
 
 **Total Backlog: ~317-486 hours**  
 **v1.0 Milestone: ~32-50 hours**
+
+
+## Session 4: Sprint 1.0 - Privacy Policy (B-032) ✅
+
+### What Was Built
+1.  **Privacy Policy Page:**
+    -   Global `/privacy` route accessible to both authenticated and anonymous users.
+    -   Professional "Hero" design with dark branding.
+    -   GDPR/CCPA compliant text + Garmin/Strava specific API clauses.
+
+2.  **Global Footer:**
+    -   New professional 4-column footer component (`Footer.tsx`).
+    -   Replaced legacy inline footer on Landing Page.
+    -   Integrated into `AppLayout.tsx`.
+
+3.  **UI Polish & Refactor:**
+    -   Switched from Tailwind classes (which were missing) to **Custom Vanilla CSS Modules** (`PrivacyPolicy.css`, `Footer.css`).
+    -   Implemented responsive card layout.
+
+### Critical Bug Fixes
+-   **React Navigation Crash:** Fixed an "Order of Hooks" violation where early return for `/privacy` caused the app to crash when navigating from the dashboard. Moved route handling to the end of `App.tsx` logic.
+
+### Backlog Updates
+| Item | Status | Notes |
+|------|--------|-------|
+| B-032 | ✅ Done | Ready for API reviews |

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import type { RaceDistance, RaceConfig, TrainingPlan, RaceDistanceId } from './types/race';
 import type { AthleteProfile } from './types/athlete';
 import { RACE_DISTANCES } from './types/race';
+import { mergeGenericPlans } from './utils/trainingPlanLogic';
 import { generateTrainingPlan } from './utils/generateTrainingPlan';
 import { RaceConfigModal } from './components/RaceConfigModal';
 import { TrainingPlanView } from './components/TrainingPlanView';
@@ -11,6 +12,8 @@ import { AthleteProfileWizard } from './components/AthleteProfileWizard';
 import { Dashboard } from './components/Dashboard';
 import { ProfilePage } from './components/ProfilePage';
 import { AppLayout } from './components/AppLayout';
+import { PrivacyPolicy } from './components/PrivacyPolicy';
+import { Footer } from './components/Footer';
 import { WorkoutLibrary } from './components/WorkoutLibrary';
 import { GoalsPage } from './components/GoalsPage';
 import { AnalyticsPage } from './components/AnalyticsPage';
@@ -24,6 +27,8 @@ function App() {
   const { savePlan, getPlans } = useTrainingPlans();
   const { profile, hasProfile, saveProfile } = useAthleteProfile();
   const navigate = useNavigate();
+  const location = useLocation();
+
 
   const [selectedDistance, setSelectedDistance] = useState<RaceDistance | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -196,6 +201,21 @@ function App() {
     }
   };
 
+  const handleRegeneratePlan = () => {
+    if (trainingPlan) {
+      const updatedPlan = generateTrainingPlan(trainingPlan.raceConfig, profile || undefined);
+      // Merge with old plan to preserve history
+      const mergedPlan = mergeGenericPlans(trainingPlan, updatedPlan);
+      setTrainingPlan(mergedPlan);
+      setSaveStatus('idle');
+    }
+  };
+
+  // Handle global routes
+  if (location.pathname === '/privacy' || location.pathname === '/privacy/') {
+    return <PrivacyPolicy />;
+  }
+
   // Show profile wizard
   if (showProfileWizard) {
     return (
@@ -218,6 +238,7 @@ function App() {
           hasPlan={true}
         >
           <Routes>
+            <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/dashboard" element={
               <Dashboard
                 plan={trainingPlan}
@@ -233,6 +254,7 @@ function App() {
                 isLoggedIn={true}
                 onLoginClick={() => { }}
                 onPlanUpdate={handlePlanUpdate}
+                onRegenerate={handleRegeneratePlan}
               />
             } />
             <Route path="/goals" element={
@@ -240,10 +262,12 @@ function App() {
                 currentConfig={trainingPlan.raceConfig}
                 onSave={(newConfig) => {
                   const newPlan = generateTrainingPlan(newConfig, profile || undefined);
-                  setTrainingPlan(newPlan);
+                  // Merge with old plan to preserve logged workout history
+                  const mergedPlan = mergeGenericPlans(trainingPlan, newPlan);
+                  setTrainingPlan(mergedPlan);
                   setSaveStatus('idle');
                   // Auto-save for logged-in users
-                  savePlan(newPlan).then(({ id, error }) => {
+                  savePlan(mergedPlan).then(({ id, error }) => {
                     if (!error && id) {
                       setSavedPlanId(id);
                       setSaveStatus('saved');
@@ -259,13 +283,6 @@ function App() {
                 profile={profile}
                 onSave={async (profileData) => {
                   await saveProfile(profileData);
-                }}
-                onPlanRegenerate={() => {
-                  if (trainingPlan) {
-                    const updatedPlan = generateTrainingPlan(trainingPlan.raceConfig, profile || undefined);
-                    setTrainingPlan(updatedPlan);
-                    setSaveStatus('idle');
-                  }
                 }}
               />
             } />
@@ -294,6 +311,7 @@ function App() {
           isLoggedIn={false}
           onLoginClick={() => setIsAuthModalOpen(true)}
           onPlanUpdate={handlePlanUpdate}
+          onRegenerate={handleRegeneratePlan}
         />
         <AuthModal
           isOpen={isAuthModalOpen}
@@ -558,22 +576,7 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer className="footer">
-        <div className="container footer-container">
-          <div className="footer-brand">
-            <span className="logo-icon">🏊‍♂️🚴‍♂️🏃‍♂️</span>
-            <span className="logo-text">TriCoach</span>
-            <p>Train smarter. Race faster.</p>
-          </div>
-          <div className="footer-links">
-            <a href="#features">Features</a>
-            <a href="#plans">Plans</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-          </div>
-          <p className="footer-copy">© 2024 TriCoach. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
 
       {/* Race Config Modal */}
       <RaceConfigModal

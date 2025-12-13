@@ -21,10 +21,42 @@ export function WorkoutEditModal({ workout, date, onSave, onClose }: WorkoutEdit
     const [totalDuration, setTotalDuration] = useState(workout.totalDuration);
     const [steps, setSteps] = useState<WorkoutStep[]>([...workout.steps]);
 
+    const handleTotalDurationChange = (newTotal: number) => {
+        const oldTotal = totalDuration;
+        setTotalDuration(newTotal);
+
+        // Scale steps proportionally
+        if (oldTotal > 0 && newTotal > 0 && steps.length > 0) {
+            const ratio = newTotal / oldTotal;
+            const newSteps = steps.map(step => {
+                // Parse duration string "10 min" -> 10
+                const durationMatch = step.duration.match(/(\d+)/);
+                if (durationMatch) {
+                    const minutes = parseInt(durationMatch[1]);
+                    const newMinutes = Math.round(minutes * ratio);
+                    return { ...step, duration: `${newMinutes} min` };
+                }
+                return step;
+            });
+            setSteps(newSteps);
+        }
+    };
+
     const handleStepChange = (index: number, field: keyof WorkoutStep, value: string | number) => {
         const newSteps = [...steps];
         newSteps[index] = { ...newSteps[index], [field]: value };
         setSteps(newSteps);
+
+        // If duration changed, update total
+        if (field === 'duration') {
+            const total = newSteps.reduce((sum, step) => {
+                const match = step.duration.toString().match(/(\d+)/);
+                return sum + (match ? parseInt(match[1]) : 0);
+            }, 0);
+            if (total > 0) {
+                setTotalDuration(total);
+            }
+        }
     };
 
     const handleSave = () => {
@@ -92,7 +124,7 @@ export function WorkoutEditModal({ workout, date, onSave, onClose }: WorkoutEdit
                                 id="workout-duration"
                                 type="number"
                                 value={totalDuration}
-                                onChange={(e) => setTotalDuration(parseInt(e.target.value) || 0)}
+                                onChange={(e) => handleTotalDurationChange(parseInt(e.target.value) || 0)}
                                 className="form-input"
                                 min={0}
                             />

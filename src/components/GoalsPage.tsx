@@ -103,7 +103,7 @@ export function GoalsPage({ currentConfig, onSave }: GoalsPageProps) {
         };
 
         onSave(config);
-        setSaveMessage('Goals updated! Your training plan has been regenerated.');
+        setSaveMessage('Goals updated! Your training plan has been regenerated. Logged workouts are preserved.');
         setHasChanges(false);
     };
 
@@ -268,7 +268,7 @@ export function GoalsPage({ currentConfig, onSave }: GoalsPageProps) {
                             className="btn btn-primary"
                             disabled={!hasChanges}
                         >
-                            {hasChanges ? 'Update Goals & Regenerate Plan' : 'No Changes'}
+                            {hasChanges ? 'Update Goals' : 'No Changes'}
                         </button>
                     </div>
                 </div>

@@ -14,7 +14,15 @@ import type {
     RaceDistanceId,
 } from '../types/race';
 
-import type { AthleteProfile, DisciplineSplit, StrengthWeakness } from '../types/athlete';
+import type { AthleteProfile, DisciplineSplit, StrengthWeakness, DayOfWeek } from '../types/athlete';
+import { adjustRestDays } from './trainingPlanLogic';
+import {
+    parseLocalDate,
+    formatLocalDate,
+    getDayOfWeek,
+    addDays,
+    getWeeksBetween
+} from './dateUtils';
 
 // ============================================
 // Helper Functions
@@ -22,27 +30,6 @@ import type { AthleteProfile, DisciplineSplit, StrengthWeakness } from '../types
 
 function generateId(): string {
     return Math.random().toString(36).substring(2, 15);
-}
-
-function addDays(date: Date, days: number): Date {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-}
-
-function formatDate(date: Date): string {
-    return date.toISOString().split('T')[0];
-}
-
-function getDayOfWeek(date: Date): string {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    return days[date.getDay()];
-}
-
-function getWeeksBetween(start: Date, end: Date): number {
-    const diffTime = end.getTime() - start.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return Math.max(1, Math.floor(diffDays / 7));
 }
 
 // ============================================
@@ -695,7 +682,8 @@ function generateWeekWorkouts(
     weekNumber: number,
     startDate: Date,
     disciplineSplit?: DisciplineSplit,
-    strengthWeakness?: StrengthWeakness
+    strengthWeakness?: StrengthWeakness,
+    preferredRestDays?: DayOfWeek[]
 ): TrainingDay[] {
     const days: TrainingDay[] = [];
     const minutesAvailable = weeklyHours * 60;
@@ -816,14 +804,14 @@ function generateWeekWorkouts(
         const isRest = dayPlan.workouts.length === 1 && dayPlan.workouts[0].discipline === 'rest';
 
         days.push({
-            date: formatDate(dayDate),
+            date: formatLocalDate(dayDate),
             dayOfWeek: getDayOfWeek(dayDate),
             workouts: dayPlan.workouts,
             isRestDay: isRest,
         });
     }
 
-    return days;
+    return adjustRestDays(days, preferredRestDays || []);
 }
 
 // ============================================
@@ -832,7 +820,7 @@ function generateWeekWorkouts(
 
 export function generateTrainingPlan(config: RaceConfig, profile?: AthleteProfile): TrainingPlan {
     const today = new Date();
-    const raceDate = new Date(config.raceDate);
+    const raceDate = parseLocalDate(config.raceDate);
     const totalWeeks = getWeeksBetween(today, raceDate);
 
     const phases = getPhaseDistribution(totalWeeks);
@@ -840,10 +828,11 @@ export function generateTrainingPlan(config: RaceConfig, profile?: AthleteProfil
 
     let currentWeek = 1;
     let weekStartDate = new Date(today);
-    // Start on next Monday
-    const dayOfWeek = weekStartDate.getDay();
-    const daysUntilMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
-    weekStartDate = addDays(weekStartDate, daysUntilMonday);
+    // Start on Monday of the CURRENT week
+    const dayOfWeek = weekStartDate.getDay(); // 0 (Sun) to 6 (Sat)
+    // If today is Monday(1), diff is 0. If Tuesday(2), diff is 1. Sun(0) -> 6.
+    const daysSinceMonday = (dayOfWeek + 6) % 7;
+    weekStartDate = addDays(weekStartDate, -daysSinceMonday);
 
     const phaseOrder: TrainingPhase[] = ['base', 'build', 'peak', 'taper'];
 
@@ -865,7 +854,8 @@ export function generateTrainingPlan(config: RaceConfig, profile?: AthleteProfil
                 currentWeek,
                 weekStartDate,
                 profile?.disciplineSplit,
-                profile?.strengthWeakness
+                profile?.strengthWeakness,
+                profile?.restDayPreferences
             );
 
             weeks.push({

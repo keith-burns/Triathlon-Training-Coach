@@ -185,6 +185,12 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                             {mode === 'login' ? 'Sign up' : 'Sign in'}
                         </button>
                     </p>
+                    <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#666' }}>
+                        By creating an account, you agree to our{' '}
+                        <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#0070F3', textDecoration: 'none' }}>
+                            Privacy Policy
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

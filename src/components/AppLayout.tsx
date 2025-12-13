@@ -5,6 +5,7 @@
 
 import type { ReactNode } from 'react';
 import { AppHeader } from './AppHeader';
+import { Footer } from './Footer';
 import './AppLayout.css';
 
 interface AppLayoutProps {
@@ -33,6 +34,7 @@ export function AppLayout({
             <main className="app-main">
                 {children}
             </main>
+            <Footer />
         </div>
     );
 }
