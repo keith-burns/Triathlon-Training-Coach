@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import type { TrainingPlan, Workout, Discipline, WorkoutCompletion } from '../types/race';
 import { recalculateWeekSummary } from '../utils/trainingPlanLogic';
-import { formatDisplayDate } from '../utils/dateUtils';
+import { formatDisplayDate, getDayOfWeek, parseLocalDate } from '../utils/dateUtils';
 import { WorkoutEditModal } from './WorkoutEditModal';
-import { WorkoutSwapModal } from './WorkoutSwapModal';
 import { WorkoutCompletionModal } from './WorkoutCompletionModal';
 import { getCompletionIcon, getCompletionColor } from '../utils/trainingAdvisor';
 import './TrainingPlanView.css';
@@ -20,14 +19,6 @@ interface TrainingPlanViewProps {
 }
 
 interface EditingWorkout {
-    workout: Workout;
-    weekIndex: number;
-    dayIndex: number;
-    workoutIndex: number;
-    date: string;
-}
-
-interface SwappingWorkout {
     workout: Workout;
     discipline: Discipline;
     weekIndex: number;
@@ -48,7 +39,6 @@ export function TrainingPlanView({
     const [selectedWeek, setSelectedWeek] = useState(0);
     const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
     const [editingWorkout, setEditingWorkout] = useState<EditingWorkout | null>(null);
-    const [swappingWorkout, setSwappingWorkout] = useState<SwappingWorkout | null>(null);
     const [showRegenConfirm, setShowRegenConfirm] = useState(false);
     const [completingWorkout, setCompletingWorkout] = useState<{
         workout: Workout;
@@ -110,58 +100,18 @@ export function TrainingPlanView({
 
     const handleEditClick = (
         workout: Workout,
-        weekIndex: number,
-        dayIndex: number,
-        workoutIndex: number,
-        date: string
-    ) => {
-        setEditingWorkout({ workout, weekIndex, dayIndex, workoutIndex, date });
-    };
-
-    const handleSwapClick = (
-        workout: Workout,
         discipline: Discipline,
         weekIndex: number,
         dayIndex: number,
         workoutIndex: number
     ) => {
-        if (discipline !== 'rest') {
-            setSwappingWorkout({ workout, discipline, weekIndex, dayIndex, workoutIndex });
-        }
+        setEditingWorkout({ workout, discipline, weekIndex, dayIndex, workoutIndex });
     };
 
-    const handleEditSave = (updatedWorkout: Workout, newDate: string) => {
+    const handleEditSave = (newWorkout: Workout, _libraryWorkoutId: string, _variationId: string) => {
         if (!editingWorkout || !onPlanUpdate) return;
 
         const { weekIndex, dayIndex, workoutIndex } = editingWorkout;
-
-        // Create a deep copy of the plan
-        const updatedPlan = { ...plan };
-        updatedPlan.weeks = [...plan.weeks];
-        updatedPlan.weeks[weekIndex] = { ...plan.weeks[weekIndex] };
-        updatedPlan.weeks[weekIndex].days = [...plan.weeks[weekIndex].days];
-        updatedPlan.weeks[weekIndex].days[dayIndex] = {
-            ...plan.weeks[weekIndex].days[dayIndex],
-            date: newDate
-        };
-        updatedPlan.weeks[weekIndex].days[dayIndex].workouts = [
-            ...plan.weeks[weekIndex].days[dayIndex].workouts
-        ];
-        updatedPlan.weeks[weekIndex].days[dayIndex].workouts[workoutIndex] = {
-            ...updatedWorkout,
-        };
-
-        // Recalculate totals for this week
-        updatedPlan.weeks[weekIndex] = recalculateWeekSummary(updatedPlan.weeks[weekIndex]);
-
-        onPlanUpdate(updatedPlan);
-        setEditingWorkout(null);
-    };
-
-    const handleSwapConfirm = (newWorkout: Workout, _libraryWorkoutId: string, _variationId: string) => {
-        if (!swappingWorkout || !onPlanUpdate) return;
-
-        const { weekIndex, dayIndex, workoutIndex } = swappingWorkout;
 
         // Create a deep copy of the plan
         const updatedPlan = { ...plan };
@@ -180,7 +130,7 @@ export function TrainingPlanView({
         updatedPlan.weeks[weekIndex] = recalculateWeekSummary(updatedPlan.weeks[weekIndex]);
 
         onPlanUpdate(updatedPlan);
-        setSwappingWorkout(null);
+        setEditingWorkout(null);
     };
 
     const handleCompletionSave = (completion: WorkoutCompletion) => {
@@ -208,6 +158,89 @@ export function TrainingPlanView({
 
         onPlanUpdate(updatedPlan);
         setCompletingWorkout(null);
+    };
+
+    // --- Drag and Drop Handlers ---
+    const handleDragStart = (e: React.DragEvent, weekIdx: number, dayIdx: number, workoutIdx: number, workout: Workout) => {
+        // Prevent drag if logged
+        if (workout.completion?.status) {
+            e.preventDefault();
+            return;
+        }
+
+        // Store indices to identify source
+        const data = JSON.stringify({ weekIdx, dayIdx, workoutIdx });
+        e.dataTransfer.setData('application/json', data);
+        e.dataTransfer.effectAllowed = 'move';
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault(); // Necessary to allow dropping
+        e.dataTransfer.dropEffect = 'move';
+    };
+
+    const handleDrop = (e: React.DragEvent, targetWeekIdx: number, targetDayIdx: number) => {
+        e.preventDefault();
+        const dataStr = e.dataTransfer.getData('application/json');
+        if (!dataStr) return;
+
+        try {
+            const { weekIdx: srcWeekIdx, dayIdx: srcDayIdx, workoutIdx: srcWorkoutIdx } = JSON.parse(dataStr);
+
+            // Don't do anything if dropped on same day
+            if (srcWeekIdx === targetWeekIdx && srcDayIdx === targetDayIdx) return;
+
+            // Move Logic
+            if (!onPlanUpdate) return;
+
+            const updatedPlan = { ...plan };
+            // Copy weeks array (and the specific weeks involved)
+            updatedPlan.weeks = [...plan.weeks];
+
+            // Ensure deep copies of source and target weeks/days
+            // (If src and target are same week, we only copy once, but logic below handles it safely by index)
+            if (srcWeekIdx === targetWeekIdx) {
+                updatedPlan.weeks[srcWeekIdx] = { ...plan.weeks[srcWeekIdx] };
+                updatedPlan.weeks[srcWeekIdx].days = [...plan.weeks[srcWeekIdx].days];
+            } else {
+                updatedPlan.weeks[srcWeekIdx] = { ...plan.weeks[srcWeekIdx] };
+                updatedPlan.weeks[srcWeekIdx].days = [...plan.weeks[srcWeekIdx].days];
+                updatedPlan.weeks[targetWeekIdx] = { ...plan.weeks[targetWeekIdx] };
+                updatedPlan.weeks[targetWeekIdx].days = [...plan.weeks[targetWeekIdx].days];
+            }
+
+            const srcDay = updatedPlan.weeks[srcWeekIdx].days[srcDayIdx];
+            const targetDay = updatedPlan.weeks[targetWeekIdx].days[targetDayIdx];
+
+            // Get the workout
+            const workoutToMove = srcDay.workouts[srcWorkoutIdx];
+
+            // Remove from source
+            srcDay.workouts = srcDay.workouts.filter((_, idx) => idx !== srcWorkoutIdx);
+
+            // Add to target
+            targetDay.workouts = [...targetDay.workouts, workoutToMove];
+
+            // Update rest day flags if moving workouts implies status change? 
+            // For now, we trust the user. If they drag a workout to a rest day, it becomes a training day.
+            if (targetDay.isRestDay && targetDay.workouts.length > 0) {
+                targetDay.isRestDay = false;
+            }
+            if (!srcDay.isRestDay && srcDay.workouts.length === 0) {
+                srcDay.isRestDay = true;
+            }
+
+            // Recalculate summaries
+            updatedPlan.weeks[srcWeekIdx] = recalculateWeekSummary(updatedPlan.weeks[srcWeekIdx]);
+            if (srcWeekIdx !== targetWeekIdx) {
+                updatedPlan.weeks[targetWeekIdx] = recalculateWeekSummary(updatedPlan.weeks[targetWeekIdx]);
+            }
+
+            onPlanUpdate(updatedPlan);
+
+        } catch (err) {
+            console.error('Failed to parse drag data', err);
+        }
     };
 
     return (
@@ -324,15 +357,23 @@ export function TrainingPlanView({
                     <div
                         key={day.date}
                         className={`day-card ${day.isRestDay ? 'rest-day' : ''}`}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, selectedWeek, dayIndex)}
                     >
                         <div className="day-header">
-                            <span className="day-name">{day.dayOfWeek}</span>
+                            <span className="day-name">{getDayOfWeek(parseLocalDate(day.date))}</span>
                             <span className="day-date">{formatDisplayDate(day.date)}</span>
                         </div>
 
                         <div className="day-workouts">
                             {day.workouts.map((workout, workoutIndex) => (
-                                <div key={workout.id} className="workout-card">
+                                <div
+                                    key={workout.id}
+                                    className={`workout-card ${workout.completion?.status ? `status-${workout.completion.status}` : ''}`}
+                                    draggable={!workout.completion?.status}
+                                    onDragStart={(e) => handleDragStart(e, selectedWeek, dayIndex, workoutIndex, workout)}
+                                    style={{ cursor: !workout.completion?.status ? 'grab' : 'default' }}
+                                >
                                     <button
                                         className="workout-summary"
                                         onClick={() => toggleWorkout(workout.id)}
@@ -363,22 +404,10 @@ export function TrainingPlanView({
                                             {/* Edit/Swap Buttons */}
                                             {onPlanUpdate && (
                                                 <div className="workout-actions">
-                                                    <button
-                                                        className="action-btn edit-btn"
-                                                        onClick={() => handleEditClick(
-                                                            workout,
-                                                            selectedWeek,
-                                                            dayIndex,
-                                                            workoutIndex,
-                                                            day.date
-                                                        )}
-                                                    >
-                                                        ✏️ Edit
-                                                    </button>
-                                                    {workout.discipline !== 'rest' && (
+                                                    {workout.discipline !== 'rest' && !workout.completion && (
                                                         <button
-                                                            className="action-btn swap-btn"
-                                                            onClick={() => handleSwapClick(
+                                                            className="action-btn edit-btn"
+                                                            onClick={() => handleEditClick(
                                                                 workout,
                                                                 workout.discipline,
                                                                 selectedWeek,
@@ -386,7 +415,7 @@ export function TrainingPlanView({
                                                                 workoutIndex
                                                             )}
                                                         >
-                                                            🔄 Swap
+                                                            ✏️ Edit
                                                         </button>
                                                     )}
                                                     {workout.discipline !== 'rest' && day.date <= new Date().toISOString().split('T')[0] && (
@@ -460,20 +489,10 @@ export function TrainingPlanView({
             {/* Edit Modal */}
             {editingWorkout && (
                 <WorkoutEditModal
-                    workout={editingWorkout.workout}
-                    date={editingWorkout.date}
+                    currentWorkout={editingWorkout.workout}
+                    discipline={editingWorkout.discipline}
                     onSave={handleEditSave}
                     onClose={() => setEditingWorkout(null)}
-                />
-            )}
-
-            {/* Swap Modal */}
-            {swappingWorkout && (
-                <WorkoutSwapModal
-                    currentWorkout={swappingWorkout.workout}
-                    discipline={swappingWorkout.discipline}
-                    onSwap={handleSwapConfirm}
-                    onClose={() => setSwappingWorkout(null)}
                 />
             )}
 

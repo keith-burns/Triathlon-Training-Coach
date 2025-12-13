@@ -1,215 +1,379 @@
-/**
- * Workout Edit Modal Styles
- */
+/* ... Previous styles ... */
+/* Retaining all previous styles, just updating the steps section */
 
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: var(--space-4);
-}
-
-.modal-content {
-    background: white;
-    border-radius: var(--radius-xl);
-    width: 100%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow: hidden;
+.edit-modal {
+    max-width: 900px;
+    width: 95vw;
+    height: 85vh;
     display: flex;
     flex-direction: column;
-    box-shadow: var(--shadow-xl);
+    padding: 0;
+    overflow: hidden;
+    background: #f8fafc;
+    /* Slate-50 */
 }
 
+/* Header */
 .modal-header {
+    background: white;
+    padding: var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--neutral-200);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--space-4) var(--space-5);
-    border-bottom: 1px solid var(--neutral-200);
+    flex-shrink: 0;
 }
 
 .modal-header h2 {
-    margin: 0;
     font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--neutral-800);
+    margin: 0;
+}
+
+.discipline-badge {
+    margin-left: var(--space-3);
+    padding: var(--space-1) var(--space-2);
+    background: var(--neutral-100);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    color: var(--neutral-600);
+    font-weight: 500;
+}
+
+/* Body Layout */
+.edit-modal-body {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Left Column: Library */
+.library-column {
+    background: white;
+    border-right: 1px solid var(--neutral-200);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.library-filters {
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--neutral-100);
+    display: flex;
+    gap: var(--space-2);
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    /* Hide scrollbar Firefox */
+}
+
+.library-filters::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar Chrome */
+}
+
+.category-btn {
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-full);
+    background: white;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--neutral-600);
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.category-btn:hover {
+    border-color: var(--neutral-400);
     color: var(--neutral-800);
 }
 
-.close-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--neutral-400);
-    cursor: pointer;
-    padding: var(--space-1);
-    line-height: 1;
+.category-btn.active {
+    background: var(--neutral-900);
+    color: white;
+    border-color: var(--neutral-900);
 }
 
-.close-btn:hover {
-    color: var(--neutral-600);
-}
-
-.modal-body {
-    padding: var(--space-5);
-    overflow-y: auto;
+.library-list {
     flex: 1;
+    overflow-y: auto;
+    padding: var(--space-2);
 }
 
-.modal-footer {
+.library-item {
     display: flex;
-    justify-content: flex-end;
-    gap: var(--space-3);
-    padding: var(--space-4) var(--space-5);
-    border-top: 1px solid var(--neutral-200);
+    flex-direction: column;
+    width: 100%;
+    padding: var(--space-3);
+    border: 1px solid transparent;
+    border-bottom: 1px solid var(--neutral-100);
+    background: white;
+    cursor: pointer;
+    text-align: left;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+    margin-bottom: 2px;
+}
+
+.library-item:hover {
     background: var(--neutral-50);
 }
 
-/* Form Elements */
-.form-group {
-    margin-bottom: var(--space-4);
+.library-item.selected {
+    background: var(--primary-50);
+    border-color: var(--primary-200);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.form-group label {
+.library-item .item-main {
+    margin-bottom: var(--space-2);
+}
+
+.library-item strong {
     display: block;
-    margin-bottom: var(--space-1);
-    font-weight: 500;
+    color: var(--neutral-800);
     font-size: 0.9rem;
-    color: var(--neutral-700);
+    margin-bottom: 4px;
 }
 
-.form-input {
+/* Description text in list */
+.library-desc {
+    font-size: 0.75rem;
+    color: var(--neutral-500);
+    line-height: 1.3;
+    margin-top: 4px;
+    margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-clamp: 2;
+    /* Adding standard property */
+}
+
+/* Mini Visualization */
+.workout-mini-viz {
+    display: flex;
+    height: 6px;
     width: 100%;
-    padding: var(--space-2) var(--space-3);
-    border: 1px solid var(--neutral-300);
-    border-radius: var(--radius-md);
-    font-size: 0.95rem;
+    background: var(--neutral-100);
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 6px 0;
+}
+
+.viz-segment {
+    height: 100%;
+    /* border-right: 1px solid white; */
+    /* Optional separation */
+}
+
+/* Meta info footer */
+.library-item .item-meta {
+    font-size: 0.7rem;
+    color: var(--neutral-400);
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Right Column: Editor */
+.editor-column {
+    padding: var(--space-6);
+    overflow-y: auto;
+    background: #f8fafc;
+}
+
+.editor-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--neutral-200);
+    padding: var(--space-6);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-section {
+    margin-bottom: var(--space-6);
+}
+
+.editor-section label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: var(--neutral-500);
+    margin-bottom: var(--space-2);
+}
+
+.title-input {
+    width: 100%;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--neutral-900);
+    border: none;
+    border-bottom: 2px solid var(--neutral-200);
+    padding: var(--space-2) 0;
+    background: transparent;
     transition: border-color 0.2s;
 }
 
-.form-input:focus {
+.title-input:focus {
     outline: none;
     border-color: var(--primary-500);
 }
 
-.form-row {
+.description-text {
+    font-size: 0.95rem;
+    color: var(--neutral-600);
+    line-height: 1.6;
+}
+
+.variation-tabs {
     display: flex;
-    gap: var(--space-4);
-}
-
-.form-row .form-group {
-    flex: 1;
-}
-
-/* Steps Editor */
-.steps-editor {
-    margin-top: var(--space-4);
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--neutral-200);
-}
-
-.steps-editor h3 {
-    font-size: 1rem;
-    color: var(--neutral-700);
-    margin-bottom: var(--space-3);
-}
-
-.step-edit-card {
-    background: var(--neutral-50);
-    border-radius: var(--radius-lg);
-    padding: var(--space-3);
-    margin-bottom: var(--space-3);
-}
-
-.step-edit-header {
-    display: flex;
-    align-items: center;
     gap: var(--space-2);
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-4);
 }
 
-.step-number {
-    width: 24px;
-    height: 24px;
-    background: var(--primary-500);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 600;
-    flex-shrink: 0;
-}
-
-.step-name-input {
-    flex: 1;
-    padding: var(--space-1) var(--space-2);
-    border: 1px solid var(--neutral-300);
+.variation-tab {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--neutral-200);
     border-radius: var(--radius-md);
-    font-weight: 500;
-}
-
-.step-duration-input {
-    width: 100px;
-    padding: var(--space-1) var(--space-2);
-    border: 1px solid var(--neutral-300);
-    border-radius: var(--radius-md);
-    text-align: center;
-}
-
-.step-instructions-input {
-    width: 100%;
-    padding: var(--space-2);
-    border: 1px solid var(--neutral-300);
-    border-radius: var(--radius-md);
-    font-size: 0.9rem;
-    resize: vertical;
-}
-
-/* Buttons */
-.btn {
-    padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius-lg);
-    font-weight: 500;
+    background: white;
     cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--neutral-600);
     transition: all 0.2s;
 }
 
-.btn-primary {
-    background: var(--primary-500);
+.variation-tab:hover {
+    border-color: var(--primary-200);
+    color: var(--primary-600);
+}
+
+.variation-tab.active {
+    background: var(--primary-50);
+    border-color: var(--primary-500);
+    color: var(--primary-700);
+    font-weight: 600;
+}
+
+/* --- UPDATED STEPS STYLES --- */
+.steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.step-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: var(--neutral-50);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--neutral-100);
+}
+
+.step-header {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.step-intensity {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
     color: white;
-    border: none;
 }
 
-.btn-primary:hover {
-    background: var(--primary-600);
+.step-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--neutral-800);
 }
 
-.btn-secondary {
+.step-duration {
+    font-size: 0.9rem;
+    color: var(--neutral-600);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+
+.step-details {
+    padding-left: calc(80px + var(--space-3));
+    /* Align with text */
+    border-top: 1px solid var(--neutral-200);
+    padding-top: var(--space-2);
+    margin-top: -2px;
+}
+
+.step-instructions {
+    margin: 0 0 var(--space-2) 0;
+    font-size: 0.85rem;
+    color: var(--neutral-600);
+    line-height: 1.4;
+}
+
+.step-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.metric-tag {
+    font-size: 0.75rem;
+    color: var(--neutral-500);
     background: white;
-    color: var(--neutral-700);
-    border: 1px solid var(--neutral-300);
+    border: 1px solid var(--neutral-200);
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
 }
 
-.btn-secondary:hover {
-    background: var(--neutral-100);
+/* Footer */
+.modal-footer {
+    background: white;
+    padding: var(--space-4) var(--space-6);
+    border-top: 1px solid var(--neutral-200);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    flex-shrink: 0;
 }
 
-@media (max-width: 600px) {
-    .modal-content {
-        max-height: 95vh;
-        margin: var(--space-2);
+/* Mobile */
+@media (max-width: 768px) {
+    .edit-modal-body {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
     }
 
-    .form-row {
-        flex-direction: column;
-        gap: 0;
+    .library-column {
+        max-height: 250px;
+        border-right: none;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+
+    .step-header {
+        grid-template-columns: 70px 1fr auto;
+    }
+
+    .step-details {
+        padding-left: 0;
+        /* Reset indentation on mobile for space */
     }
 }
