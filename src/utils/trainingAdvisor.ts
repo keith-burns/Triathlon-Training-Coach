@@ -145,9 +145,63 @@ export function getWeekStats(week: TrainingWeek): TrainingStats {
 /**
  * Generate adaptive training recommendations based on completion data
  */
+import { getLocalToday, parseLocalDate } from './dateUtils';
+
+// ... (existing helper function calculateComplianceStats)
+
+/**
+ * Calculate compliance statistics (based on past and today's workouts only)
+ */
+export function calculateComplianceStats(plan: TrainingPlan): { complianceScore: number; pastWorkoutsCount: number } {
+    const todayStr = getLocalToday();
+    const today = parseLocalDate(todayStr); // local midnight
+
+    let totalPoints = 0;
+    let earnedPoints = 0;
+    let workoutCount = 0;
+
+    plan.weeks.forEach(week => {
+        week.days.forEach(day => {
+            const date = parseLocalDate(day.date);
+            // Include today and past
+            if (date <= today) {
+                day.workouts.forEach(workout => {
+                    if (workout.discipline === 'rest') return;
+
+                    workoutCount++;
+                    totalPoints += 1; // Each workout is worth 1 point
+
+                    if (workout.completion) {
+                        switch (workout.completion.status) {
+                            case 'completed':
+                                earnedPoints += 1;
+                                break;
+                            case 'partial':
+                                earnedPoints += 0.75;
+                                break;
+                            case 'skipped':
+                                earnedPoints += 0;
+                                break;
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    return {
+        complianceScore: totalPoints > 0 ? (earnedPoints / totalPoints) * 100 : 0,
+        pastWorkoutsCount: workoutCount
+    };
+}
+
+/**
+ * Generate adaptive training recommendations based on completion data
+ */
 export function generateRecommendations(plan: TrainingPlan): TrainingRecommendation[] {
     const recommendations: TrainingRecommendation[] = [];
-    const stats = calculateTrainingStats(plan);
+
+    const compliance = calculateComplianceStats(plan);
 
     // Check recent weeks for patterns
     const recentWeeks = plan.weeks.slice(-3);
@@ -184,21 +238,30 @@ export function generateRecommendations(plan: TrainingPlan): TrainingRecommendat
         });
     }
 
-    // 3. Check completion rate
-    if (stats.completionRate < 70 && stats.totalWorkouts > 5) {
-        recommendations.push({
-            type: 'consistency',
-            title: 'Focus on Consistency',
-            message: `You've completed ${Math.round(stats.completionRate)}% of workouts. Try to maintain at least 80% for optimal progress.`,
-            priority: 3,
-        });
-    } else if (stats.completionRate >= 90 && stats.totalWorkouts > 10) {
-        recommendations.push({
-            type: 'info',
-            title: 'Great Consistency!',
-            message: 'Excellent adherence to your training plan. Keep up the great work!',
-            priority: 1,
-        });
+    // 3. Check compliance (Consistency) - uses compliance to date, not global completion
+    if (compliance.pastWorkoutsCount > 3) { // Only show if we have some history
+        if (compliance.complianceScore < 70) {
+            recommendations.push({
+                type: 'consistency',
+                title: 'Focus on Consistency',
+                message: `You've achieved ${Math.round(compliance.complianceScore)}% compliance to date. Aim for 80%+ consistency for best results.`,
+                priority: 3,
+            });
+        } else if (compliance.complianceScore >= 90) {
+            recommendations.push({
+                type: 'info',
+                title: 'Great Consistency!',
+                message: `Excellent work keeping up ${Math.round(compliance.complianceScore)}% compliance. Keep this momentum going!`,
+                priority: 1,
+            });
+        } else if (compliance.complianceScore >= 70) {
+            recommendations.push({
+                type: 'info',
+                title: 'Solid Progress',
+                message: `You're tracking well with ${Math.round(compliance.complianceScore)}% compliance. Keep hitting those key workouts.`,
+                priority: 1,
+            });
+        }
     }
 
     // 4. Check for missed week patterns

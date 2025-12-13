@@ -10,7 +10,7 @@ import {
     LineChart, Line,
 } from 'recharts';
 import type { TrainingPlan } from '../types/race';
-import { calculateTrainingStats, getWeekStats, generateRecommendations } from '../utils/trainingAdvisor';
+import { calculateTrainingStats, calculateComplianceStats, getWeekStats, generateRecommendations } from '../utils/trainingAdvisor';
 import './AnalyticsPage.css';
 
 interface AnalyticsPageProps {
@@ -37,6 +37,7 @@ const INTENSITY_COLORS = {
 
 export function AnalyticsPage({ plan }: AnalyticsPageProps) {
     const stats = useMemo(() => calculateTrainingStats(plan), [plan]);
+    const compliance = useMemo(() => calculateComplianceStats(plan), [plan]);
     const recommendations = useMemo(() => generateRecommendations(plan), [plan]);
 
     // Weekly volume data for bar chart
@@ -113,7 +114,14 @@ export function AnalyticsPage({ plan }: AnalyticsPageProps) {
                     <span className="stat-icon">🎯</span>
                     <div className="stat-info">
                         <span className="stat-value">{Math.round(stats.completionRate)}%</span>
-                        <span className="stat-label">Completion Rate</span>
+                        <span className="stat-label">Completion to Date</span>
+                    </div>
+                </div>
+                <div className="stat-card">
+                    <span className="stat-icon">⭐</span>
+                    <div className="stat-info">
+                        <span className="stat-value">{Math.round(compliance.complianceScore)}%</span>
+                        <span className="stat-label">Compliance to Date</span>
                     </div>
                 </div>
                 <div className="stat-card">
@@ -121,13 +129,6 @@ export function AnalyticsPage({ plan }: AnalyticsPageProps) {
                     <div className="stat-info">
                         <span className="stat-value">{stats.completedWorkouts}</span>
                         <span className="stat-label">Workouts Completed</span>
-                    </div>
-                </div>
-                <div className="stat-card">
-                    <span className="stat-icon">⏱️</span>
-                    <div className="stat-info">
-                        <span className="stat-value">{formatMinutes(stats.totalActualMinutes)}</span>
-                        <span className="stat-label">Total Training Time</span>
                     </div>
                 </div>
                 <div className="stat-card">
@@ -192,19 +193,27 @@ export function AnalyticsPage({ plan }: AnalyticsPageProps) {
                                     data={intensityData}
                                     dataKey="value"
                                     nameKey="name"
-                                    cx="50%"
+                                    cx="40%"
                                     cy="50%"
+                                    innerRadius={60}
                                     outerRadius={80}
-                                    label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
+                                    paddingAngle={2}
                                 >
                                     {intensityData.map((entry, index) => (
                                         <Cell
                                             key={`cell-${index}`}
                                             fill={INTENSITY_COLORS[entry.name as keyof typeof INTENSITY_COLORS] || '#94a3b8'}
+                                            stroke="none"
                                         />
                                     ))}
                                 </Pie>
                                 <Tooltip />
+                                <Legend
+                                    verticalAlign="middle"
+                                    align="right"
+                                    layout="vertical"
+                                    iconType="circle"
+                                />
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
