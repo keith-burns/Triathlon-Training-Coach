@@ -2,185 +2,273 @@
  * Workout Completion Modal Styles
  */
 
+/* Modal Container Override */
 .completion-modal {
-    max-width: 500px;
+    max-width: 480px;
+    width: 90vw;
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    padding: 0;
+    overflow: hidden;
 }
 
+/* Header */
+.completion-modal .modal-header {
+    background: white;
+    padding: var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--neutral-100);
+}
+
+.completion-modal .modal-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--neutral-800);
+}
+
+.completion-modal .modal-body {
+    padding: var(--space-6);
+}
+
+/* Banner */
 .workout-info-banner {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: var(--space-3) var(--space-4);
-    background: var(--neutral-100);
+    background: var(--neutral-50);
+    border: 1px solid var(--neutral-200);
     border-radius: var(--radius-lg);
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-6);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 .workout-info-banner strong {
-    color: var(--neutral-800);
+    color: var(--neutral-900);
+    font-size: 0.95rem;
 }
 
 .workout-info-banner span {
     color: var(--neutral-500);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
 /* Status Selector */
 .status-selector {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-2);
-    margin-bottom: var(--space-4);
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
 }
 
 .status-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--space-1);
-    padding: var(--space-3);
-    border: 2px solid var(--neutral-200);
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-2);
+    border: 1px solid var(--neutral-200);
     border-radius: var(--radius-lg);
     background: white;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    height: 80px;
 }
 
 .status-btn:hover {
     background: var(--neutral-50);
+    border-color: var(--neutral-300);
+    transform: translateY(-1px);
 }
 
 .status-btn .status-icon {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+    line-height: 1;
+    margin-bottom: 2px;
 }
 
 .status-btn span:last-child {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--neutral-600);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--neutral-500);
+    transition: color 0.2s;
 }
 
+/* Active States */
 .status-btn.completed.active {
+    background: #f0fdf4;
     border-color: var(--success);
-    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
 }
 
-.status-btn.completed.active .status-icon {
+.status-btn.completed.active span:last-child {
     color: var(--success);
 }
 
 .status-btn.partial.active {
-    border-color: var(--warning);
-    background: rgba(245, 158, 11, 0.1);
+    background: #fefce8;
+    border-color: var(--accent-500);
+    /* warm yellow */
+    color: var(--accent-600);
+    box-shadow: 0 2px 4px rgba(234, 179, 8, 0.1);
 }
 
-.status-btn.partial.active .status-icon {
-    color: var(--warning);
+.status-btn.partial.active span:last-child {
+    color: var(--accent-700);
 }
 
 .status-btn.skipped.active {
-    border-color: var(--neutral-400);
     background: var(--neutral-100);
+    border-color: var(--neutral-400);
+    color: var(--neutral-600);
 }
 
-/* RPE Slider */
-.rpe-group label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.status-btn.skipped.active span:last-child {
+    color: var(--neutral-700);
 }
 
-.target-rpe {
-    font-weight: 400;
-    font-size: 0.85rem;
-    color: var(--neutral-500);
-}
 
-.rpe-slider-container {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    margin-top: var(--space-2);
-}
-
-.rpe-slider {
-    flex: 1;
-    height: 10px;
-    border-radius: 5px;
-    appearance: none;
-    cursor: pointer;
-}
-
-.rpe-slider::-webkit-slider-thumb {
-    appearance: none;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: white;
-    border: 3px solid currentColor;
-    cursor: pointer;
-    box-shadow: var(--shadow-md);
-}
-
-.rpe-value {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 80px;
-}
-
-.rpe-number {
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1;
-}
-
-.rpe-label {
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-
-/* Effort Feedback */
-.effort-feedback {
-    margin-top: var(--space-3);
-    padding: var(--space-3);
-    border-radius: var(--radius-lg);
-    font-size: 0.9rem;
-}
-
-.effort-feedback.warning {
-    background: rgba(245, 158, 11, 0.1);
-    color: var(--warning);
-    border: 1px solid var(--warning);
-}
-
-.effort-feedback.success {
-    background: rgba(16, 185, 129, 0.1);
-    color: var(--success);
-    border: 1px solid var(--success);
-}
-
-/* Form overrides */
+/* Form Elements */
 .completion-modal .form-group {
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-5);
 }
 
 .completion-modal .form-group label {
-    display: block;
-    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: var(--neutral-500);
     margin-bottom: var(--space-2);
-    color: var(--neutral-700);
 }
 
 .completion-modal .form-input {
     width: 100%;
-    padding: var(--space-2) var(--space-3);
-    border: 1px solid var(--neutral-300);
-    border-radius: var(--radius-md);
-    font-size: 0.95rem;
+    padding: var(--space-2) 0;
+    border: none;
+    border-bottom: 2px solid var(--neutral-200);
+    border-radius: 0;
+    font-size: 1.1rem;
+    color: var(--neutral-900);
+    background: transparent;
+    transition: border-color 0.2s;
 }
 
 .completion-modal .form-input:focus {
     outline: none;
     border-color: var(--primary-500);
+}
+
+.completion-modal textarea.form-input {
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-size: 0.95rem;
+    min-height: 80px;
+    resize: vertical;
+}
+
+.completion-modal textarea.form-input:focus {
+    border-color: var(--primary-500);
+}
+
+/* RPE Slider Section */
+.rpe-slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: var(--space-1);
+}
+
+.rpe-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    outline: none;
+    margin: var(--space-2) 0;
+}
+
+/* Slider Thumb */
+.rpe-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border: 4px solid white;
+    /* Inner color handled by parent input bg usually, but here we want contrast */
+    transform: scale(1);
+    transition: transform 0.1s;
+    margin-top: -8px;
+    /* Center check */
+}
+
+/* We hack the thumb color in JS or rely on the gradient background to show 'through' if transparent, 
+   but simplistic solid thumb is better. We'll rely on the JS gradient for the track. 
+*/
+.rpe-slider::-webkit-slider-thumb {
+    border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.rpe-slider:active::-webkit-slider-thumb {
+    transform: scale(1.1);
+}
+
+.rpe-value {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--neutral-50);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    margin-top: -5px;
+}
+
+.rpe-number {
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.rpe-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Feedback Alerts */
+.effort-feedback {
+    margin-top: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    display: flex;
+    gap: var(--space-2);
+}
+
+.effort-feedback.warning {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #ffedd5;
+}
+
+.effort-feedback.success {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #dcfce7;
+}
+
+/* Footer */
+.completion-modal .modal-footer {
+    padding: var(--space-4) var(--space-6);
+    background: var(--neutral-50);
+    border-top: 1px solid var(--neutral-200);
 }

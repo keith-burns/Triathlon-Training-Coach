@@ -289,9 +289,21 @@ export const BIKE_WORKOUTS: LibraryWorkout[] = [
                 duration: 45,
                 label: '45 min',
                 steps: [
-                    { name: 'Warm-up', duration: '12 min', intensity: 'easy', instructions: 'Progressive warm-up with 2x30 sec pickups', targetHeartRateZone: 1, cadence: '85-95 rpm' },
-                    { name: 'Interval Set', duration: '24 min', intensity: 'intervals', instructions: '5x3 min at 110-120% FTP. 3 min easy between each.', targetHeartRateZone: 5, cadence: '95-105 rpm' },
-                    { name: 'Cool-down', duration: '9 min', intensity: 'recovery', instructions: 'Easy spinning', targetHeartRateZone: 1, cadence: '85-95 rpm' },
+                    { name: 'Warm-up', duration: '10 min', intensity: 'easy', instructions: 'Progressive warm-up with 2x30 sec pickups', targetHeartRateZone: 1, cadence: '85-95 rpm' },
+                    // Interval 1
+                    { name: 'Interval 1', duration: '3 min', intensity: 'intervals', instructions: 'Hard effort! 110-120% FTP.', targetHeartRateZone: 5, cadence: '95-105 rpm' },
+                    { name: 'Recovery 1', duration: '3 min', intensity: 'recovery', instructions: 'Easy spin, recover breathing.', targetHeartRateZone: 1, cadence: '85-95 rpm' },
+                    // Interval 2
+                    { name: 'Interval 2', duration: '3 min', intensity: 'intervals', instructions: 'Hard effort! 110-120% FTP.', targetHeartRateZone: 5, cadence: '95-105 rpm' },
+                    { name: 'Recovery 2', duration: '3 min', intensity: 'recovery', instructions: 'Easy spin, recover breathing.', targetHeartRateZone: 1, cadence: '85-95 rpm' },
+                    // Interval 3
+                    { name: 'Interval 3', duration: '3 min', intensity: 'intervals', instructions: 'Hard effort! 110-120% FTP.', targetHeartRateZone: 5, cadence: '95-105 rpm' },
+                    { name: 'Recovery 3', duration: '3 min', intensity: 'recovery', instructions: 'Easy spin, recover breathing.', targetHeartRateZone: 1, cadence: '85-95 rpm' },
+                    // Interval 4
+                    { name: 'Interval 4', duration: '3 min', intensity: 'intervals', instructions: 'Last one! Empty the tank.', targetHeartRateZone: 5, cadence: '95-105 rpm' },
+                    { name: 'Recovery 4', duration: '3 min', intensity: 'recovery', instructions: 'Easy spin.', targetHeartRateZone: 1, cadence: '85-95 rpm' },
+
+                    { name: 'Cool-down', duration: '11 min', intensity: 'recovery', instructions: 'Very easy spinning to finish.', targetHeartRateZone: 1, cadence: '85-95 rpm' },
                 ],
             },
             {
@@ -300,8 +312,23 @@ export const BIKE_WORKOUTS: LibraryWorkout[] = [
                 label: '60 min',
                 steps: [
                     { name: 'Warm-up', duration: '15 min', intensity: 'easy', instructions: 'Progressive warm-up with 3x30 sec pickups', targetHeartRateZone: 1, cadence: '85-95 rpm' },
-                    { name: 'Interval Set', duration: '36 min', intensity: 'intervals', instructions: '6x3 min at 110-120% FTP. 3 min easy between each.', targetHeartRateZone: 5, cadence: '95-105 rpm' },
-                    { name: 'Cool-down', duration: '9 min', intensity: 'recovery', instructions: 'Easy spinning', targetHeartRateZone: 1, cadence: '85-95 rpm' },
+                    // Interval 1
+                    { name: 'Interval 1', duration: '3 min', intensity: 'intervals', instructions: 'Hard effort! 110-120% FTP.', targetHeartRateZone: 5, cadence: '95-105 rpm' },
+                    { name: 'Recovery 1', duration: '3 min', intensity: 'recovery', instructions: 'Easy spin.', targetHeartRateZone: 1, cadence: '85-95 rpm' },
+                    // Interval 2
+                    { name: 'Interval 2', duration: '3 min', intensity: 'intervals', instructions: 'Hard effort! 110-120% FTP.', targetHeartRateZone: 5, cadence: '95-105 rpm' },
+                    { name: 'Recovery 2', duration: '3 min', intensity: 'recovery', instructions: 'Easy spin.', targetHeartRateZone: 1, cadence: '85-95 rpm' },
+                    // Interval 3
+                    { name: 'Interval 3', duration: '3 min', intensity: 'intervals', instructions: 'Hard effort! 110-120% FTP.', targetHeartRateZone: 5, cadence: '95-105 rpm' },
+                    { name: 'Recovery 3', duration: '3 min', intensity: 'recovery', instructions: 'Easy spin.', targetHeartRateZone: 1, cadence: '85-95 rpm' },
+                    // Interval 4
+                    { name: 'Interval 4', duration: '3 min', intensity: 'intervals', instructions: 'Hard effort! 110-120% FTP.', targetHeartRateZone: 5, cadence: '95-105 rpm' },
+                    { name: 'Recovery 4', duration: '3 min', intensity: 'recovery', instructions: 'Easy spin.', targetHeartRateZone: 1, cadence: '85-95 rpm' },
+                    // Interval 5
+                    { name: 'Interval 5', duration: '3 min', intensity: 'intervals', instructions: 'Stay strong!', targetHeartRateZone: 5, cadence: '95-105 rpm' },
+                    { name: 'Recovery 5', duration: '3 min', intensity: 'recovery', instructions: 'Easy spin.', targetHeartRateZone: 1, cadence: '85-95 rpm' },
+
+                    { name: 'Cool-down', duration: '15 min', intensity: 'recovery', instructions: 'Very easy spinning.', targetHeartRateZone: 1, cadence: '85-95 rpm' },
                 ],
             },
         ],
